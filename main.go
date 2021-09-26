@@ -42,29 +42,30 @@ func main() {
 	}
 	us := store.NewUserStore(db)
 
-	result, err := us.Find(11)
+	user1, err := us.Find(1)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if reflect.ValueOf(result).IsNil() {
-		fmt.Println("IsNil")
+	if reflect.ValueOf(user1).IsNil() {
+		fmt.Println("IsNil:user1")
 	}
 
-	gbe, err := us.GetByEmail("tt")
+	user2, err := us.GetByEmail("email")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if reflect.ValueOf(gbe).IsNil() {
-		fmt.Println("IsNil:gbe")
+	if reflect.ValueOf(user2).IsNil() {
+		fmt.Println("IsNil:user2")
 	}
 
-	if gbe == nil {
-		fmt.Println("IsNil1")
-	}
 
 	r :=api.New(us)
 	h := r.Handler()
-	http.ListenAndServe(":3000", h)
+
+	if err := http.ListenAndServe(":3000", h); err != nil {
+		panic(err)
+	}
+
 }
