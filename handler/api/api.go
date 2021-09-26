@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/serhatmorkoc/golang-realworld-example/model"
+	"github.com/serhatmorkoc/go-realworld-example/model"
 	"net/http"
 )
 

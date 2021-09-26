@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	"github.com/serhatmorkoc/golang-realworld-example/db"
-	"github.com/serhatmorkoc/golang-realworld-example/handler/api"
-	"github.com/serhatmorkoc/golang-realworld-example/store"
+	"github.com/serhatmorkoc/go-realworld-example/db"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api"
+	"github.com/serhatmorkoc/go-realworld-example/store"
 	"log"
 	"net/http"
 	"os"
@@ -23,7 +23,7 @@ const (
 
 func main() {
 
-	if err := godotenv.Load("env/local.env"); err != nil {
+	if err := godotenv.Load("local.env"); err != nil {
 		panic("Error loading .env file")
 	}
 

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
-	"github.com/serhatmorkoc/golang-realworld-example/db/migrate"
+	"github.com/serhatmorkoc/go-realworld-example/db/migrate"
 	"time"
 )
 

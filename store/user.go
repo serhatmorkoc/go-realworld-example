@@ -3,7 +3,7 @@ package store
 import (
 	"database/sql"
 	"fmt"
-	"github.com/serhatmorkoc/golang-realworld-example/model"
+	"github.com/serhatmorkoc/go-realworld-example/model"
 	"runtime/debug"
 )
 
