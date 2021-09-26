@@ -3,7 +3,7 @@ package model
 import "time"
 
 type UserStore interface {
-	Find(id int64) ([]User, error)
+	Find(id int64) ([]*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
 	Create(*User) error

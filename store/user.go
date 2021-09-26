@@ -18,7 +18,7 @@ type userStore struct {
 	//ctx context.Context
 }
 
-func (us *userStore) Find(id int64) ([]model.User, error) {
+func (us *userStore) Find(id int64) ([]*model.User, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -32,7 +32,7 @@ func (us *userStore) Find(id int64) ([]model.User, error) {
 	}
 	defer rows.Close()
 
-	var users []model.User
+	var users []*model.User
 	//users := []*model.User{}
 
 	for rows.Next() {
@@ -52,7 +52,7 @@ func (us *userStore) Find(id int64) ([]model.User, error) {
 			return nil, err
 		}
 
-		users = append(users, user)
+		users = append(users, &user)
 	}
 
 	if err := rows.Err(); err != nil {

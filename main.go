@@ -42,7 +42,7 @@ func main() {
 	}
 	us := store.NewUserStore(db)
 
-	user1, err := us.Find(1)
+	user1, err := us.Find(11)
 	if err != nil {
 		log.Fatal(err)
 	}
