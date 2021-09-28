@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/serhatmorkoc/go-realworld-example/db"
-	"github.com/serhatmorkoc/go-realworld-example/handler/api"
+	"github.com/serhatmorkoc/go-realworld-example/model"
 	"github.com/serhatmorkoc/go-realworld-example/store"
 	"log"
-	"net/http"
 	"os"
 	"reflect"
 	"strconv"
+	"time"
 )
 
 const (
@@ -60,12 +60,44 @@ func main() {
 		fmt.Println("IsNil:user2")
 	}
 
+	/*	exUser := model.User{
+			Email:     fmt.Sprintf("email-%d", "email"),
+			Token:     fmt.Sprintf("token-%d", "token"),
+			UserName:  fmt.Sprintf("username-%d", "username"),
+			Bio:       fmt.Sprintf("bio-%d", "bie"),
+			Image:     fmt.Sprintf("image-%d", "image"),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
 
-	r :=api.New(us)
-	h := r.Handler()
+		lastInsertedId, err := us.Create(&exUser)
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	if err := http.ListenAndServe(":3000", h); err != nil {
-		panic(err)
+		fmt.Printf("last inserted id: %d\n", lastInsertedId)*/
+
+	exUser1 := model.User{
+		UserId:    138193,
+		Email:     fmt.Sprintf("email-%s", "email1122222"),
+		Token:     fmt.Sprintf("token-%s", "token"),
+		UserName:  fmt.Sprintf("username-%s", "username"),
+		Bio:       fmt.Sprintf("bio-%s", "bie"),
+		Image:     fmt.Sprintf("image-%s", "image"),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
+
+	_, err = us.Update(&exUser1)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	/*	r :=api.New(us)
+		h := r.Handler()
+
+		if err := http.ListenAndServe(":3000", h); err != nil {
+			panic(err)
+		}*/
 
 }

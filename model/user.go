@@ -6,8 +6,8 @@ type UserStore interface {
 	Find(id int64) ([]*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
-	Create(*User) error
-	Update(*User) error
+	Create(*User) (int64, error)
+	Update(*User) (int64, error)
 	Delete(*User) error
 	List(*User) error
 	ListRange(*User) error
@@ -19,10 +19,10 @@ type UserStore interface {
 type User struct {
 	UserId    int64  `json:"user_id"`
 	Email     string `json:"email"`
-	Token     string
-	UserName  string
-	Bio       *string
-	Image     *string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Token     string `json:"token"`
+	UserName  string `json:"userName"`
+	Bio       string `json:"bio"`
+	Image     string `json:"image"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
