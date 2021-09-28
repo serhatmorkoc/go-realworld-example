@@ -1,4 +1,4 @@
-package migrate
+package postgres
 
 import (
 	"database/sql"

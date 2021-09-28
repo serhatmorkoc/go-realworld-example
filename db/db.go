@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
-	"github.com/serhatmorkoc/go-realworld-example/db/migrate"
+	"github.com/serhatmorkoc/go-realworld-example/db/migrate/postgres"
 	"time"
 )
 
@@ -55,7 +55,7 @@ func pingDatabase(db *sql.DB) (err error) {
 
 func setupDatabase(db *sql.DB, driver string) error {
 
-	return migrate.Migrate(db)
+	return postgres.Migrate(db)
 
 	/*switch driver {
 	case "mysql":

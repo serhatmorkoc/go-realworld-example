@@ -26,14 +26,16 @@ func (us *userStore) Find(id int64) ([]*model.User, error) {
 		}
 	}()
 
+	//users := make([]*model.User, 0)
+	var users []*model.User
+
 	rows, err := us.db.Query("SELECT * FROM users where user_id = $1", id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var users []*model.User
-	//users := []*model.User{}
+
 
 	for rows.Next() {
 		var user model.User
@@ -154,7 +156,7 @@ func (us *userStore) Update(user *model.User) (int64, error) {
 		return rows, nil
 	}
 
-	return 0,nil
+	return 0, nil
 }
 
 func (us *userStore) Delete(user *model.User) error {
