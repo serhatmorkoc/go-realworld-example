@@ -8,13 +8,6 @@ import (
 	"time"
 )
 
-type Locker interface {
-	Lock()
-	Unlock()
-	RLock()
-	RUnlock()
-}
-
 func Connect(driver, dsn string, maxOpenConnections int) (*sql.DB, error) {
 
 	db, err := sql.Open(driver, dsn)
@@ -51,13 +44,13 @@ func setupDatabase(db *sql.DB, driver string) error {
 
 	return postgres.Migrate(db)
 
-	/*switch driver {
-	case "mysql":
-		return mysql.Migrate(db)
+	switch driver {
 	case "postgres":
 		return postgres.Migrate(db)
+	case "mysql":
+		return errors.New("mysql is not supported")
 	default:
-		return sqlite.Migrate(db)
+		return errors.New("driver is not supported")
 	}
-	*/
+
 }

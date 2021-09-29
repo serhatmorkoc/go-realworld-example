@@ -24,14 +24,11 @@ func (s Server) Handler() http.Handler {
 	r.Use(middleware.NoCache)
 	r.Use(middleware.Logger)
 
-/*	r.Routes("/user", func(r chi.Router) {
-
-	})*/
-
 	r.Route("/user", func(r chi.Router) {
 
-		r.Get("/", user.HandlerList(s))
-
+		r.Get("/list", user.HandlerList(s.Users))
+		r.Get("/id/{id}", user.HandlerFind(s.Users))
+		r.Get("/email/{email}", user.GetByEmail(s.Users))
 
 	})
 
