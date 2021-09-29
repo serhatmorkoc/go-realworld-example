@@ -9,7 +9,7 @@ type UserStore interface {
 	Create(*User) (int64, error)
 	Update(*User) (int64, error)
 	Delete(*User) error
-	List(*User) error
+	List() ([]*User,error)
 	ListRange(*User) error
 	AddFollower(user *User, followerID uint) error
 	RemoveFollower(user *User, followerID uint) error

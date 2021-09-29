@@ -149,37 +149,79 @@ func (us *userStore) Update(user *model.User) (int64, error) {
 	}
 	defer tx.Rollback()
 
-	stmt, err := us.db.Prepare("UPDATE users SET email=$2, token=$3, username=$4, bio=$5, image=$6, created_at=$7, updated_at=$8 " +
-		"WHERE user_id=$1 RETURNING user_id")
-	if err != nil {
-		return 0, err
-	}
-	defer stmt.Close()
+	query := "UPDATE users SET email=$2, token=$3, username=$4, bio=$5, image=$6, created_at=$7, updated_at=$8  WHERE user_id=$1 RETURNING user_id"
 
-	result, err := stmt.Exec(user.UserId, user.Email, user.Token, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
+	result, execErr := tx.Exec(query, user.Email, user.Token, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
+	if execErr != nil {
+		rollbackErr := tx.Rollback()
+		if rollbackErr != nil {
+			fmt.Printf("update failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
+			return 0, rollbackErr
+		}
 
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return 0, err
+		fmt.Printf("update failed: %v", execErr)
+		return 0, execErr
 	}
 
 	if err := tx.Commit(); err != nil {
 		return 0, err
+		fmt.Println(err)
 	}
 
-	if rows != 0 {
-		return rows, nil
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		return 1, nil
 	}
 
-	return 0, nil
+	return rowsAffected, nil
 }
 
 func (us *userStore) Delete(user *model.User) error {
 	panic("implement me")
 }
 
-func (us *userStore) List(user *model.User) error {
-	panic("implement me")
+func (us *userStore) List() ([]*model.User, error) {
+
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	var users []*model.User
+
+	rows, err := us.db.Query("SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user model.User
+
+		err = rows.Scan(
+			&user.UserId,
+			&user.Email,
+			&user.Token,
+			&user.UserName,
+			&user.Bio,
+			&user.Image,
+			&user.CreatedAt,
+			&user.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+
 }
 
 func (us *userStore) ListRange(user *model.User) error {

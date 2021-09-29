@@ -5,19 +5,13 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/serhatmorkoc/go-realworld-example/db"
 	"github.com/serhatmorkoc/go-realworld-example/db/seed"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"github.com/serhatmorkoc/go-realworld-example/store"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
-)
-
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "1234563"
-	dbname   = "conduit"
 )
 
 func main() {
@@ -49,7 +43,6 @@ func main() {
 		seed.Seed(us)
 	}
 
-
 	exUser1 := model.User{
 		Email:     fmt.Sprintf("email-%s", "email"),
 		Token:     fmt.Sprintf("token-%s", "token"),
@@ -65,11 +58,12 @@ func main() {
 		fmt.Println(err)
 	}
 
-	/*	r :=api.New(us)
-		h := r.Handler()
+	r := api.New(us)
+	h := r.Handler()
 
-		if err := http.ListenAndServe(":3000", h); err != nil {
-			panic(err)
-		}*/
+
+	if err := http.ListenAndServe(":3000", h); err != nil {
+		panic(err)
+	}
 
 }

@@ -1,9 +1,9 @@
 package api
 
 import (
-	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"net/http"
 )
@@ -20,14 +20,19 @@ func New(users model.UserStore) Server {
 
 func (s Server) Handler() http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.NoCache)
 	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
-		res,err := s.Users.GetByEmail("email")
-		if err != nil {
-			fmt.Println(err)
-		}
-		w.Write([]byte(fmt.Sprintf("hi %v", res)))
+/*	r.Routes("/user", func(r chi.Router) {
+
+	})*/
+
+	r.Route("/user", func(r chi.Router) {
+
+		r.Get("/", user.HandlerList(s))
+
+
 	})
 
 	return r

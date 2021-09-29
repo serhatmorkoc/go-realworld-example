@@ -15,13 +15,7 @@ type Locker interface {
 	RUnlock()
 }
 
-/*type DB struct {
-Conn   *sqlx.DB
-Lock   Locker
-
-}
-*/
-func Connect(driver string, dsn string, maxOpenConnections int) (*sql.DB, error) {
+func Connect(driver, dsn string, maxOpenConnections int) (*sql.DB, error) {
 
 	db, err := sql.Open(driver, dsn)
 	if err != nil {
@@ -38,7 +32,7 @@ func Connect(driver string, dsn string, maxOpenConnections int) (*sql.DB, error)
 
 	db.SetMaxIdleConns(maxOpenConnections)
 
-	return db,nil
+	return db, nil
 }
 
 func pingDatabase(db *sql.DB) (err error) {
