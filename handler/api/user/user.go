@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi"
+	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/model"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -25,30 +27,70 @@ func HandlerFind(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func GetByEmail(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		w.Header().Set("Content-Type", "application/json")
-
-		val := chi.URLParam(r, "email")
-
-		res, err := us.GetByEmail(val)
-		if err != nil {
-			fmt.Println(err)
-		}
-		json.NewEncoder(w).Encode(res)
-	}
-}
-
 func HandlerList(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 
-		res, err := us.List()
+		users, err := us.List()
 		if err != nil {
-			fmt.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
-		json.NewEncoder(w).Encode(res)
+
+		usersJson, err := json.Marshal(users)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(usersJson)
+	}
+}
+
+func HandlerCreate(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		response := make(map[string]string)
+
+		body, err := io.ReadAll(r.Body)
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				//TODO: 
+			}
+		}(r.Body)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		var user model.User
+		if err := json.Unmarshal(body, &user); err != nil {
+
+			w.WriteHeader(http.StatusBadRequest)
+			response["message"] = err.Error()
+			jsonResponse, _ := json.Marshal(response)
+			w.Write(jsonResponse)
+			return
+		}
+
+		affected, err := us.Create(&user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if affected == 0 {
+			http.Error(w, errors.New("unsuccessful").Error(), http.StatusBadRequest)
+			return
+		}
+
+		response["message"] = "successful"
+		jsonResponse, err := json.Marshal(response)
+		w.Write(jsonResponse)
 	}
 }

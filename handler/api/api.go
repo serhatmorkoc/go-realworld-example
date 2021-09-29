@@ -28,7 +28,7 @@ func (s Server) Handler() http.Handler {
 
 		r.Get("/list", user.HandlerList(s.Users))
 		r.Get("/id/{id}", user.HandlerFind(s.Users))
-		r.Get("/email/{email}", user.GetByEmail(s.Users))
+		r.Post("/create", user.HandlerCreate(s.Users))
 
 	})
 
