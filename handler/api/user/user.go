@@ -11,6 +11,12 @@ import (
 	"strconv"
 )
 
+type BaseResponse struct {
+	Status  int
+	Message string
+	Data    interface{}
+}
+
 func HandlerFind(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -37,11 +43,18 @@ func HandlerList(us model.UserStore) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
-		usersJson, err := json.Marshal(users)
+		var br BaseResponse
+		br.Data = users
+		br.Status = 200
+		br.Message = "test"
+
+		usersJson, err := json.Marshal(br)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+
+
 
 		w.WriteHeader(http.StatusOK)
 		w.Write(usersJson)
@@ -53,13 +66,13 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		response := make(map[string]string)
+
 
 		body, err := io.ReadAll(r.Body)
 		defer func(Body io.ReadCloser) {
 			err := Body.Close()
 			if err != nil {
-				//TODO: 
+				//TODO:
 			}
 		}(r.Body)
 
@@ -68,6 +81,7 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
+		response := make(map[string]string)
 		var user model.User
 		if err := json.Unmarshal(body, &user); err != nil {
 
