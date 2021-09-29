@@ -5,9 +5,11 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/serhatmorkoc/go-realworld-example/db"
 	"github.com/serhatmorkoc/go-realworld-example/db/seed"
+	"github.com/serhatmorkoc/go-realworld-example/model"
 	"github.com/serhatmorkoc/go-realworld-example/store"
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
@@ -45,6 +47,22 @@ func main() {
 
 	if sd {
 		seed.Seed(us)
+	}
+
+
+	exUser1 := model.User{
+		Email:     fmt.Sprintf("email-%s", "email"),
+		Token:     fmt.Sprintf("token-%s", "token"),
+		UserName:  fmt.Sprintf("username-%s", "username"),
+		Bio:       fmt.Sprintf("bio-%s", "bie"),
+		Image:     fmt.Sprintf("image-%s", "image"),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	_, err = us.Create(&exUser1)
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	/*	r :=api.New(us)

@@ -35,8 +35,6 @@ func (us *userStore) Find(id int64) ([]*model.User, error) {
 	}
 	defer rows.Close()
 
-
-
 	for rows.Next() {
 		var user model.User
 		//var user = new(model.User)
@@ -101,33 +99,50 @@ func (us *userStore) GetByUsername(s string) (*model.User, error) {
 
 func (us *userStore) Create(user *model.User) (int64, error) {
 
+	//Veri döndürmeyen veritabanı eylemleri gerçekleştirdiğinizde, database/sql
+	//paketinden bir Exec veya ExecContext yöntemi kullanın. Bu şekilde yürüteceğiniz SQL
+	//ifadeleri INSERT, DELETE ve UPDATE içerir.
+
 	tx, err := us.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 	defer tx.Rollback()
 
-	stmt, err := us.db.Prepare("INSERT INTO public.users (email, token, username, bio, image, created_at, updated_at) " +
-		"VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id")
-	if err != nil {
-		return 0, err
-	}
-	defer stmt.Close()
+	query := "INSERT INTO public.users (email, token, username, bio, image, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id"
 
-	var lastInsertId int64
-	if err := stmt.QueryRow(user.Email, user.Token, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt).
-		Scan(&lastInsertId); err != nil {
-		return 0, err
+	result, execErr := tx.Exec(query, user.Email, user.Token, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
+	if execErr != nil {
+		rollbackErr := tx.Rollback()
+		if rollbackErr != nil {
+			fmt.Printf("update failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
+			return 0, rollbackErr
+		}
+
+		fmt.Printf("update failed: %v", execErr)
+		return 0, execErr
 	}
 
 	if err := tx.Commit(); err != nil {
 		return 0, err
+		fmt.Println(err)
 	}
 
-	return lastInsertId, nil
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println(err)
+		return 1, nil
+	}
+
+	return rowsAffected, nil
 }
 
 func (us *userStore) Update(user *model.User) (int64, error) {
+
+	//Veri döndürmeyen veritabanı eylemleri gerçekleştirdiğinizde, database/sql
+	//paketinden bir Exec veya ExecContext yöntemi kullanın. Bu şekilde yürüteceğiniz SQL
+	//ifadeleri INSERT, DELETE ve UPDATE içerir.
+
 	tx, err := us.db.Begin()
 	if err != nil {
 		return 0, err
