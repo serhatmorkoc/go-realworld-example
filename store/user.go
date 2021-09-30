@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"runtime/debug"
 )
@@ -18,7 +19,7 @@ type userStore struct {
 	//ctx context.Context
 }
 
-func (us *userStore) Find(id int64) ([]*model.User, error) {
+func (us *userStore) Find(id int64) (*model.User, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -26,40 +27,26 @@ func (us *userStore) Find(id int64) ([]*model.User, error) {
 		}
 	}()
 
-	//users := make([]*model.User, 0)
-	var users []*model.User
+	var user model.User
+	err := us.db.QueryRow("SELECT * FROM users where user_id = $1 LIMIT 1", id).Scan(
+		&user.UserId,
+		&user.Email,
+		&user.Token,
+		&user.UserName,
+		&user.Bio,
+		&user.Image,
+		&user.CreatedAt,
+		&user.UpdatedAt)
 
-	rows, err := us.db.Query("SELECT * FROM users where user_id = $1", id)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
-	for rows.Next() {
-		var user model.User
-		//var user = new(model.User)
-
-		err = rows.Scan(
-			&user.UserId,
-			&user.Email,
-			&user.Token,
-			&user.UserName,
-			&user.Bio,
-			&user.Image,
-			&user.CreatedAt,
-			&user.UpdatedAt)
-		if err != nil {
-			return nil, err
-		}
-
-		users = append(users, &user)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return users, nil
+	return &user, nil
 }
 
 func (us *userStore) GetByEmail(s string) (*model.User, error) {
@@ -70,6 +57,10 @@ func (us *userStore) GetByEmail(s string) (*model.User, error) {
 			debug.PrintStack()
 		}
 	}()
+
+	if len(s) == 0 {
+		return nil, errors.New("email cannot be empty")
+	}
 
 	var user model.User
 	err := us.db.QueryRow("SELECT * FROM users where email = $1 LIMIT 1", s).Scan(
@@ -94,14 +85,41 @@ func (us *userStore) GetByEmail(s string) (*model.User, error) {
 }
 
 func (us *userStore) GetByUsername(s string) (*model.User, error) {
-	panic("implement me")
+
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			debug.PrintStack()
+		}
+	}()
+
+	if len(s) == 0 {
+		return nil, errors.New("username cannot be empty")
+	}
+
+	var user model.User
+	err := us.db.QueryRow("SELECT * FROM users where username = $1 LIMIT 1", s).Scan(
+		&user.UserId,
+		&user.Email,
+		&user.Token,
+		&user.UserName,
+		&user.Bio,
+		&user.Image,
+		&user.CreatedAt,
+		&user.UpdatedAt)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (us *userStore) Create(user *model.User) (int64, error) {
-
-	//Veri döndürmeyen veritabanı eylemleri gerçekleştirdiğinizde, database/sql
-	//paketinden bir Exec veya ExecContext yöntemi kullanın. Bu şekilde yürüteceğiniz SQL
-	//ifadeleri INSERT, DELETE ve UPDATE içerir.
 
 	tx, err := us.db.Begin()
 	if err != nil {
@@ -115,17 +133,17 @@ func (us *userStore) Create(user *model.User) (int64, error) {
 	if execErr != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr != nil {
-			fmt.Printf("update failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
+			fmt.Printf("insert failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
 			return 0, rollbackErr
 		}
 
-		fmt.Printf("update failed: %v", execErr)
+		fmt.Printf("insert failed: %v", execErr)
 		return 0, execErr
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, err
 		fmt.Println(err)
+		return 0, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -139,19 +157,24 @@ func (us *userStore) Create(user *model.User) (int64, error) {
 
 func (us *userStore) Update(user *model.User) (int64, error) {
 
-	//Veri döndürmeyen veritabanı eylemleri gerçekleştirdiğinizde, database/sql
-	//paketinden bir Exec veya ExecContext yöntemi kullanın. Bu şekilde yürüteceğiniz SQL
-	//ifadeleri INSERT, DELETE ve UPDATE içerir.
-
 	tx, err := us.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 	defer tx.Rollback()
 
-	query := "UPDATE users SET email=$2, token=$3, username=$4, bio=$5, image=$6, created_at=$7, updated_at=$8  WHERE user_id=$1 RETURNING user_id"
+	query := "UPDATE users SET email=:email, token=:token, username=:username, bio=:bio, image=:image, created_at=:created_at, updated_at=:updated_at  WHERE user_id=:user_id RETURNING user_id"
 
-	result, execErr := tx.Exec(query, user.Email, user.Token, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
+	result, execErr := tx.Exec(query,
+		sql.Named("email", user.Email),
+		sql.Named("token", user.Token),
+		sql.Named("username", user.UserName),
+		sql.Named("bio", user.Bio),
+		sql.Named("image", user.Image),
+		sql.Named("created_at", user.CreatedAt),
+		sql.Named("updated_at", user.UpdatedAt),
+		sql.Named("user_id", user.UserId))
+
 	if execErr != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr != nil {
@@ -164,8 +187,8 @@ func (us *userStore) Update(user *model.User) (int64, error) {
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, err
 		fmt.Println(err)
+		return 0, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -226,22 +249,15 @@ func (us *userStore) List() ([]*model.User, error) {
 
 func (us *userStore) ListRange(params model.UserParams) ([]*model.User, error) {
 
-	query := "SELECT * FROM users ORDER BY user_id %s LIMIT %d OFFSET %d"
-	/*var sort string
+	query := "SELECT * FROM users ORDER BY %s LIMIT %d OFFSET %d"
 
+	//TODO:
 	switch {
 	case params.Sort:
-		sort = 'DESC'
+		query = fmt.Sprintf(query, "user_id DESC", params.Size, params.Page)
 	default:
-		sort = "DESC"
-	}*/
-
-		switch {
-		case params.Sort:
-			query = fmt.Sprintf(query, "DESC", params.Size, params.Page)
-		default:
-			query = fmt.Sprintf(query, "ASC", params.Size, params.Page)
-		}
+		query = fmt.Sprintf(query, "user_id ASC", params.Size, params.Page)
+	}
 
 	var users []*model.User
 
@@ -275,7 +291,6 @@ func (us *userStore) ListRange(params model.UserParams) ([]*model.User, error) {
 	}
 
 	return users, nil
-
 }
 
 func (us *userStore) AddFollower(user *model.User, followerID uint) error {

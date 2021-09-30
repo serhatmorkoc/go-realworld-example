@@ -5,7 +5,7 @@ import (
 )
 
 type UserStore interface {
-	Find(id int64) ([]*User, error)
+	Find(id int64) (*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
 	Create(*User) (int64, error)
@@ -25,7 +25,7 @@ type UserParams struct {
 }
 
 type User struct {
-	UserId    int64  `json:"user_id"`
+	UserId    int64  `json:"-"`
 	Email     string `json:"email"`
 	Token     string `json:"token"`
 	UserName  string `json:"userName"`
@@ -34,3 +34,4 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+

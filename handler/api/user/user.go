@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
@@ -11,25 +10,58 @@ import (
 	"strconv"
 )
 
-type BaseResponse struct {
-	Status  int
-	Message string
-	Data    interface{}
-}
-
 func HandlerFind(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		w.Header().Set("Content-Type", "application/json")
+		//w.Header().Set("Content-Type", "application/json")
 
 		val := chi.URLParam(r, "id")
 
 		v, _ := strconv.ParseInt(val, 10, 64)
-		res, err := us.Find(v)
+		user, err := us.Find(v)
 		if err != nil {
-			fmt.Println(err)
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"message": []string{err.Error()},
+				"data":    []interface{}{},
+				"code":    http.StatusBadRequest,
+			})
+			return
 		}
-		json.NewEncoder(w).Encode(res)
+
+		//TODO: user boş gelirse json da nil olarak gösteriliyor.
+		render.JSON(w, r, map[string]interface{}{
+			"success": true,
+			"errors":  []interface{}{},
+			"data":    []interface{}{user},
+			"code":    http.StatusOK,
+		})
+	}
+}
+
+func HandlerGetByEmail(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		val := chi.URLParam(r, "email")
+
+		user, err := us.GetByEmail(val)
+		if err != nil {
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"errors":  []interface{}{err.Error()},
+				"data":    []interface{}{},
+				"code":    http.StatusOK,
+			})
+			return
+		}
+
+		//TODO: user boş gelirse json da nil olarak gösteriliyor.
+		render.JSON(w, r, map[string]interface{}{
+			"success": true,
+			"errors":  []interface{}{},
+			"data":    []interface{}{user},
+			"code":    http.StatusOK,
+		})
 	}
 }
 
@@ -41,21 +73,20 @@ func HandlerList(us model.UserStore) http.HandlerFunc {
 			w.WriteHeader(http.StatusBadRequest)
 			render.JSON(w, r, map[string]interface{}{
 				"success": false,
-				"message":  []string{err.Error()},
-				"data":    []string{},
-				"data_count": 0,
-				"code": http.StatusBadRequest,
+				"message": []interface{}{err.Error()},
+				"data":    []interface{}{},
+				"code":    http.StatusBadRequest,
 			})
+			return
 		}
 
+		//TODO: user boş gelirse json da nil olarak gösteriliyor.
 		render.JSON(w, r, map[string]interface{}{
 			"success": true,
-			"errors":  []string{""},
-			"data":   users,
-			"data_count": len(users),
-			"code" : http.StatusOK,
+			"errors":  []interface{}{},
+			"data":    users,
+			"code":    http.StatusOK,
 		})
-
 	}
 }
 
@@ -71,23 +102,20 @@ func HandlerListRange(us model.UserStore) http.HandlerFunc {
 			w.WriteHeader(http.StatusBadRequest)
 			render.JSON(w, r, map[string]interface{}{
 				"success": false,
-				"message":  []string{err.Error()},
-				"data":    []string{},
-				"data_count": 0,
-				"code": http.StatusBadRequest,
+				"message": []interface{}{err.Error()},
+				"data":    []interface{}{},
+				"code":    http.StatusBadRequest,
 			})
 			return
 		}
 
+		//TODO: user boş gelirse json da nil olarak gösteriliyor.
 		render.JSON(w, r, map[string]interface{}{
 			"success": true,
-			"errors":  []string{""},
-			"data":   users,
-			"data_count": len(users),
-			"code" : http.StatusOK,
+			"errors":  []interface{}{},
+			"data":    users,
+			"code":    http.StatusOK,
 		})
-		return
-
 	}
 }
 
@@ -101,9 +129,9 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 		if err := json.Unmarshal(body, &user); err != nil {
 			render.JSON(w, r, map[string]interface{}{
 				"success": false,
-				"errors":  err.Error(),
-				"data":   []interface{}{},
-				"code" : http.StatusBadRequest,
+				"errors":  []interface{}{err.Error()},
+				"data":    []interface{}{},
+				"code":    http.StatusBadRequest,
 			})
 			return
 		}
@@ -112,9 +140,9 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 		if err != nil {
 			render.JSON(w, r, map[string]interface{}{
 				"success": false,
-				"errors":  err.Error(),
-				"data":   []interface{}{},
-				"code" : http.StatusInternalServerError,
+				"errors":  []interface{}{err.Error()},
+				"data":    []interface{}{},
+				"code":    http.StatusInternalServerError,
 			})
 			return
 		}
@@ -122,18 +150,18 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 		if affected == 0 {
 			render.JSON(w, r, map[string]interface{}{
 				"success": false,
-				"errors":  "operation failed",
-				"data":   []interface{}{},
-				"code" : http.StatusInternalServerError,
+				"errors":  []interface{}{"operation failed"},
+				"data":    []interface{}{},
+				"code":    http.StatusInternalServerError,
 			})
 			return
 		}
 
 		render.JSON(w, r, map[string]interface{}{
 			"success": true,
-			"errors":  "",
-			"data":   user,
-			"code" : http.StatusCreated,
+			"errors":  []interface{}{},
+			"data":    []interface{}{user},
+			"code":    http.StatusCreated,
 		})
 	}
 }
