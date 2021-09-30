@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi"
-	"github.com/pkg/errors"
+	"github.com/go-chi/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"io"
 	"net/http"
@@ -36,75 +36,104 @@ func HandlerFind(us model.UserStore) http.HandlerFunc {
 func HandlerList(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		w.Header().Set("Content-Type", "application/json")
-
 		users, err := us.List()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"message":  []string{err.Error()},
+				"data":    []string{},
+				"data_count": 0,
+				"code": http.StatusBadRequest,
+			})
 		}
 
-		var br BaseResponse
-		br.Data = users
-		br.Status = 200
-		br.Message = "test"
+		render.JSON(w, r, map[string]interface{}{
+			"success": true,
+			"errors":  []string{""},
+			"data":   users,
+			"data_count": len(users),
+			"code" : http.StatusOK,
+		})
 
-		usersJson, err := json.Marshal(br)
+	}
+}
+
+func HandlerListRange(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		users, err := us.ListRange(model.UserParams{
+			Sort: true,
+			Page: 10,
+			Size: 5,
+		})
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"message":  []string{err.Error()},
+				"data":    []string{},
+				"data_count": 0,
+				"code": http.StatusBadRequest,
+			})
 			return
 		}
 
+		render.JSON(w, r, map[string]interface{}{
+			"success": true,
+			"errors":  []string{""},
+			"data":   users,
+			"data_count": len(users),
+			"code" : http.StatusOK,
+		})
+		return
 
-
-		w.WriteHeader(http.StatusOK)
-		w.Write(usersJson)
 	}
 }
 
 func HandlerCreate(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-
-
 		body, err := io.ReadAll(r.Body)
-		defer func(Body io.ReadCloser) {
-			err := Body.Close()
-			if err != nil {
-				//TODO:
-			}
-		}(r.Body)
+		defer r.Body.Close()
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		response := make(map[string]string)
 		var user model.User
 		if err := json.Unmarshal(body, &user); err != nil {
-
-			w.WriteHeader(http.StatusBadRequest)
-			response["message"] = err.Error()
-			jsonResponse, _ := json.Marshal(response)
-			w.Write(jsonResponse)
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"errors":  err.Error(),
+				"data":   []interface{}{},
+				"code" : http.StatusBadRequest,
+			})
 			return
 		}
 
 		affected, err := us.Create(&user)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"errors":  err.Error(),
+				"data":   []interface{}{},
+				"code" : http.StatusInternalServerError,
+			})
 			return
 		}
 
 		if affected == 0 {
-			http.Error(w, errors.New("unsuccessful").Error(), http.StatusBadRequest)
+			render.JSON(w, r, map[string]interface{}{
+				"success": false,
+				"errors":  "operation failed",
+				"data":   []interface{}{},
+				"code" : http.StatusInternalServerError,
+			})
 			return
 		}
 
-		response["message"] = "successful"
-		jsonResponse, err := json.Marshal(response)
-		w.Write(jsonResponse)
+		render.JSON(w, r, map[string]interface{}{
+			"success": true,
+			"errors":  "",
+			"data":   user,
+			"code" : http.StatusCreated,
+		})
 	}
 }

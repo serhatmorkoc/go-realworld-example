@@ -224,8 +224,58 @@ func (us *userStore) List() ([]*model.User, error) {
 
 }
 
-func (us *userStore) ListRange(user *model.User) error {
-	panic("implement me")
+func (us *userStore) ListRange(params model.UserParams) ([]*model.User, error) {
+
+	query := "SELECT * FROM users ORDER BY user_id %s LIMIT %d OFFSET %d"
+	/*var sort string
+
+	switch {
+	case params.Sort:
+		sort = 'DESC'
+	default:
+		sort = "DESC"
+	}*/
+
+		switch {
+		case params.Sort:
+			query = fmt.Sprintf(query, "DESC", params.Size, params.Page)
+		default:
+			query = fmt.Sprintf(query, "ASC", params.Size, params.Page)
+		}
+
+	var users []*model.User
+
+	rows, err := us.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user model.User
+
+		err = rows.Scan(
+			&user.UserId,
+			&user.Email,
+			&user.Token,
+			&user.UserName,
+			&user.Bio,
+			&user.Image,
+			&user.CreatedAt,
+			&user.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+
 }
 
 func (us *userStore) AddFollower(user *model.User, followerID uint) error {

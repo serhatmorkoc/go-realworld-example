@@ -10,4 +10,7 @@ require (
 	github.com/pkg/errors v0.9.1
 )
 
-require github.com/jinzhu/inflection v1.0.0 // indirect
+require (
+	github.com/go-chi/render v1.0.1 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+)
