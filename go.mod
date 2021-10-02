@@ -1,6 +1,6 @@
 module github.com/serhatmorkoc/go-realworld-example
 
-go 1.17
+go 1.16
 
 require (
 	github.com/go-chi/chi v1.5.4
@@ -11,6 +11,6 @@ require (
 )
 
 require (
-	github.com/go-chi/render v1.0.1 // indirect
-	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/go-chi/render v1.0.1
+	github.com/go-openapi/runtime v0.19.31
 )
