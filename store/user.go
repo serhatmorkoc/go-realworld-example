@@ -16,7 +16,6 @@ func NewUserStore(db *sql.DB) model.UserStore {
 
 type userStore struct {
 	db *sql.DB
-	//ctx context.Context
 }
 
 func (us *userStore) Find(id int64) (*model.User, error) {
@@ -24,6 +23,7 @@ func (us *userStore) Find(id int64) (*model.User, error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
+			debug.PrintStack()
 		}
 	}()
 
@@ -50,13 +50,6 @@ func (us *userStore) Find(id int64) (*model.User, error) {
 }
 
 func (us *userStore) GetByEmail(s string) (*model.User, error) {
-
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			debug.PrintStack()
-		}
-	}()
 
 	if len(s) == 0 {
 		return nil, errors.New("email cannot be empty")

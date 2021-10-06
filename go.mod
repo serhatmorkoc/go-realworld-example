@@ -10,8 +10,13 @@ require (
 )
 
 require (
-	github.com/chi-middleware/logrus-logger v0.2.0
-	github.com/go-openapi/runtime v0.19.31
 	github.com/joho/godotenv v1.3.0
 	github.com/sirupsen/logrus v1.8.1
+)
+
+require (
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
+	golang.org/x/sys v0.0.0-20210309074719-68d13333faf2 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
