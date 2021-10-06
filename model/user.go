@@ -5,14 +5,14 @@ import (
 )
 
 type UserStore interface {
-	Find(id int64) (*User, error)
+	GetById(id int64) (*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
 	Create(*User) (int64, error)
 	Update(*User) (int64, error)
 	Delete(*User) error
-	List() ([]*User, error)
-	ListRange(params UserParams) ([]*User, error)
+	GetAll() ([]*User, error)
+	GetAllRange(params UserParams) ([]*User, error)
 	AddFollower(user *User, followerID uint) error
 	RemoveFollower(user *User, followerID uint) error
 	IsFollower(userID, followerID uint) (bool, error)
@@ -33,4 +33,8 @@ type User struct {
 	Image     string    `json:"image"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (user *User) Validate() error {
+	return nil
 }

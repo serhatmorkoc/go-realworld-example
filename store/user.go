@@ -18,7 +18,7 @@ type userStore struct {
 	db *sql.DB
 }
 
-func (us *userStore) Find(id int64) (*model.User, error) {
+func (us *userStore) GetById(id int64) (*model.User, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -197,7 +197,7 @@ func (us *userStore) Delete(user *model.User) error {
 	panic("implement me")
 }
 
-func (us *userStore) List() ([]*model.User, error) {
+func (us *userStore) GetAll() ([]*model.User, error) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -240,7 +240,7 @@ func (us *userStore) List() ([]*model.User, error) {
 
 }
 
-func (us *userStore) ListRange(params model.UserParams) ([]*model.User, error) {
+func (us *userStore) GetAllRange(params model.UserParams) ([]*model.User, error) {
 
 	query := "SELECT * FROM users ORDER BY %s LIMIT %d OFFSET %d"
 
