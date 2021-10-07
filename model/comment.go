@@ -4,7 +4,7 @@ import "time"
 
 type CommentStore interface {
 	GetAllBySlug(string) ([]*Comment, error)
-	GetByID(uint) (*Comment, error)
+	GetByID(uint64) (*Comment, error)
 	Create(*Comment) (int, error)
 	Delete(*Comment) (int, error)
 }

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	database "github.com/serhatmorkoc/go-realworld-example/db"
-	"github.com/serhatmorkoc/go-realworld-example/db/seed"
+	database "github.com/serhatmorkoc/go-realworld-example/database"
+	"github.com/serhatmorkoc/go-realworld-example/database/seed"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api"
 	"github.com/serhatmorkoc/go-realworld-example/store"
 	"net/http"
@@ -45,13 +45,13 @@ func main() {
 	}
 
 	us := store.NewUserStore(db)
-	store.NewCommentStore(db)
+	cm := store.NewCommentStore(db)
 
 	if sd {
 		seed.Seed(us)
 	}
 
-	r := api.New(us)
+	r := api.New(us,cm)
 	h := r.Handler()
 
 	if err := http.ListenAndServe(":3000", h); err != nil {

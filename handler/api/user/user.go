@@ -16,7 +16,7 @@ func HandlerFind(us model.UserStore) http.HandlerFunc {
 		val := chi.URLParam(r, "id")
 
 		v, _ := strconv.ParseInt(val, 10, 64)
-		user, err := us.Find(v)
+		user, err := us.GetById(v)
 		if err != nil {
 			render.ErrorJSON(w, err, http.StatusBadRequest)
 			return
@@ -29,7 +29,7 @@ func HandlerFind(us model.UserStore) http.HandlerFunc {
 func HandlerList(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		users, err := us.List()
+		users, err := us.GetAll()
 		if err != nil {
 			render.ErrorJSON(w, err, http.StatusBadRequest)
 			return
@@ -42,7 +42,8 @@ func HandlerList(us model.UserStore) http.HandlerFunc {
 func HandlerListRange(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		users, err := us.ListRange(model.UserParams{
+		users, err := us.GetAllRange(
+			model.UserParams{
 			Sort: true,
 			Page: 10,
 			Size: 5,

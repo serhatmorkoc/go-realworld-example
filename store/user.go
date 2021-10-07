@@ -51,10 +51,6 @@ func (us *userStore) GetById(id int64) (*model.User, error) {
 
 func (us *userStore) GetByEmail(s string) (*model.User, error) {
 
-	if len(s) == 0 {
-		return nil, errors.New("email cannot be empty")
-	}
-
 	var user model.User
 	err := us.db.QueryRow("SELECT * FROM users where email = $1 LIMIT 1", s).Scan(
 		&user.UserId,

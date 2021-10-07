@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 )
 
@@ -25,7 +26,7 @@ type UserParams struct {
 }
 
 type User struct {
-	UserId    int64     `json:"-"`
+	UserId    int64     `json:"user_id"`
 	Email     string    `json:"email"`
 	Token     string    `json:"token"`
 	UserName  string    `json:"userName"`
@@ -36,5 +37,14 @@ type User struct {
 }
 
 func (user *User) Validate() error {
+
+	if len(user.UserName) == 0 {
+		return errors.New("username cannot be empty")
+	}
+
+	if len(user.Email) == 0 {
+		return errors.New("email cannot be empty")
+	}
+
 	return nil
 }

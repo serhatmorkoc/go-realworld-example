@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
-	"github.com/serhatmorkoc/go-realworld-example/db/migrate/postgres"
+	"github.com/serhatmorkoc/go-realworld-example/database/migrate/postgres"
 	"time"
 )
 

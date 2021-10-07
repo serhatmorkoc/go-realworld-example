@@ -12,6 +12,10 @@ var migrations = []struct {
 		name: "create-table-users",
 		stmt: createTableUsers,
 	},
+	{
+		name: "create-table-comments",
+		stmt: createTableComments,
+	},
 }
 
 func Migrate(db *sql.DB) error {
@@ -59,7 +63,7 @@ func selectCompleted(db *sql.DB)(map[string]struct{}, error) {
 }
 
 func createTable(db *sql.DB) error {
-	_, err := db.Exec(migrationTableCreate)
+	_, err := db.Exec(createTableMigrations)
 	return err
 }
 
@@ -68,7 +72,7 @@ func insertMigration(db *sql.DB, name string) error {
 	return err
 }
 
-var migrationTableCreate = `
+var createTableMigrations = `
 CREATE TABLE IF NOT EXISTS migrations (
  name VARCHAR(255)
 ,UNIQUE(name)
@@ -86,15 +90,33 @@ SELECT name FROM migrations
 var createTableUsers = `
 CREATE SEQUENCE IF NOT EXISTS users_seq;
 
-CREATE TABLE IF NOT EXISTS users(
-user_id int DEFAULT NEXTVAL ('users_seq') NOT NULL,
-email VARCHAR NOT NULL,
-token VARCHAR NOT NULL,
-username VARCHAR NOT NULL,
-bio TEXT,
-image VARCHAR,
-created_at Timestamp NOT NULL,
-updated_at Timestamp NOT NULL,
-CONSTRAINT PK_users PRIMARY KEY(user_id)
+CREATE TABLE IF NOT EXISTS users
+(
+    user_id int DEFAULT NEXTVAL('users_seq') NOT NULL,
+    email VARCHAR NOT NULL,
+    token VARCHAR NOT NULL,
+    username VARCHAR NOT NULL,
+    bio TEXT,
+    image VARCHAR,
+    created_at Timestamp NOT NULL,
+    updated_at Timestamp NOT NULL,
+    CONSTRAINT PK_users PRIMARY KEY
+    (user_id)
+);
+`
+
+var createTableComments = `
+CREATE SEQUENCE IF NOT EXISTS comments_seq;
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    comment_id int DEFAULT NEXTVAL ('comments_seq') NOT NULL,
+    article_id int NOT NULL,
+    body TEXT NOT NULL,
+    author VARCHAR NOT NULL,
+    created_at Timestamp NOT NULL,
+    updated_at Timestamp NOT NULL,
+    CONSTRAINT PK_comments PRIMARY KEY
+    (comment_id)
 );
 `
