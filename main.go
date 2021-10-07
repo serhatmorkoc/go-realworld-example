@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -54,8 +55,19 @@ func main() {
 	r := api.New(us,cm)
 	h := r.Handler()
 
-	if err := http.ListenAndServe(":3000", h); err != nil {
+	s := &http.Server{
+		Addr:              fmt.Sprintf(":%s", "3000"),
+		Handler:           h,
+		ReadTimeout:       5 * time.Second,
+		WriteTimeout:      5 * time.Second,
+	}
+
+	if err = s.ListenAndServe(); err != nil {
 		panic(err)
 	}
+
+/*	if err := http.ListenAndServe(":3000", h); err != nil {
+		panic(err)
+	}*/
 
 }

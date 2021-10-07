@@ -14,3 +14,20 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonResp)
 	return
 }
+
+--------
+
+func authError(w http.ResponseWriter, err error, clientMsg string) {
+    log.Println("Authentication failed: %v", err)
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusForbidden)
+
+    err = json.NewEncoder(w).Encode(struct {
+        Error string
+    }{Error: clientMsg})
+    if err != nil {
+        log.Println("Failed to write response: %v", err)
+    }
+
+    return
+}
