@@ -1,9 +1,7 @@
 package model
 
-import "github.com/jinzhu/gorm"
-
 type Article struct {
-	gorm.Model
+
 	ArticleId      int64
 	Slug           string
 	Title          string

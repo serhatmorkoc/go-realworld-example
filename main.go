@@ -45,6 +45,7 @@ func main() {
 	}
 
 	us := store.NewUserStore(db)
+	store.NewCommentStore(db)
 
 	if sd {
 		seed.Seed(us)

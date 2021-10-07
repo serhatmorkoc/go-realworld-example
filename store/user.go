@@ -8,14 +8,14 @@ import (
 	"runtime/debug"
 )
 
+type userStore struct {
+	db *sql.DB
+}
+
 func NewUserStore(db *sql.DB) model.UserStore {
 	return &userStore{
 		db: db,
 	}
-}
-
-type userStore struct {
-	db *sql.DB
 }
 
 func (us *userStore) GetById(id int64) (*model.User, error) {

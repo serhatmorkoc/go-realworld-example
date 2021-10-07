@@ -10,11 +10,14 @@ import (
 
 type Server struct {
 	Users model.UserStore
+	Comments model.CommentStore
 }
 
-func New(users model.UserStore) Server {
+func New(users model.UserStore, comments model.CommentStore) Server {
 	return Server{
 		Users: users,
+		Comments: comments,
+
 	}
 }
 
