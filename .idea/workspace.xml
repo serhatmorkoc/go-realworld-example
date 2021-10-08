@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b838081e-4749-4647-b67f-94afe11db250" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/database/databasetest/databasetest.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/store/comment_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/store/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/comment.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +54,14 @@
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\db\migrate\postgres" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/serhatmorkoc/go-realworld-example">
+  <component name="RunDashboard">
+    <option name="excludedTypes">
+      <set>
+        <option value="HttpClient.HttpRequestRunConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Test.TestComment in github.com/serhatmorkoc/go-realworld-example/store">
     <configuration name="go build github.com/serhatmorkoc/go-realworld-example" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$" />
@@ -62,12 +71,47 @@
       <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
+    <configuration name="TestComment in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-realworld-example" />
+      <working_directory value="$PROJECT_DIR$/store" />
+      <kind value="PACKAGE" />
+      <package value="github.com/serhatmorkoc/go-realworld-example/store" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestComment\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-realworld-example" />
+      <working_directory value="$PROJECT_DIR$/store" />
+      <kind value="PACKAGE" />
+      <package value="github.com/serhatmorkoc/go-realworld-example/store" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestComment\E$/^\QCreate\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="comment_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-realworld-example" />
+      <working_directory value="$PROJECT_DIR$/store" />
+      <kind value="FILE" />
+      <package value="github.com/serhatmorkoc/go-realworld-example" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/store/comment_test.go" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
     <configuration name="generated-requests#1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" runType="Run single request">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestComment in github.com/serhatmorkoc/go-realworld-example/store" />
+        <item itemvalue="Go Test.comment_test.go" />
         <item itemvalue="Go Build.go build github.com/serhatmorkoc/go-realworld-example" />
+        <item itemvalue="Go Test.TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" />
         <item itemvalue="HTTP Request.generated-requests#1" />
       </list>
     </recent_temporary>
