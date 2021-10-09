@@ -3,9 +3,7 @@ package store
 import (
 	"database/sql"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/model"
-	"runtime/debug"
 )
 
 type userStore struct {
@@ -19,13 +17,6 @@ func NewUserStore(db *sql.DB) model.UserStore {
 }
 
 func (us *userStore) GetById(id int64) (*model.User, error) {
-
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			debug.PrintStack()
-		}
-	}()
 
 	var user model.User
 	err := us.db.QueryRow("SELECT * FROM users where user_id = $1 LIMIT 1", id).Scan(
@@ -45,6 +36,8 @@ func (us *userStore) GetById(id int64) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+
 
 	return &user, nil
 }
@@ -74,17 +67,6 @@ func (us *userStore) GetByEmail(s string) (*model.User, error) {
 }
 
 func (us *userStore) GetByUsername(s string) (*model.User, error) {
-
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			debug.PrintStack()
-		}
-	}()
-
-	if len(s) == 0 {
-		return nil, errors.New("username cannot be empty")
-	}
 
 	var user model.User
 	err := us.db.QueryRow("SELECT * FROM users where username = $1 LIMIT 1", s).Scan(
@@ -233,7 +215,6 @@ func (us *userStore) GetAll() ([]*model.User, error) {
 	}
 
 	return users, nil
-
 }
 
 func (us *userStore) GetAllRange(params model.UserParams) ([]*model.User, error) {

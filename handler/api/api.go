@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api/comment"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"net/http"
@@ -52,12 +53,18 @@ func (s Server) Handler() http.Handler {
 	sh1 := sw.Redoc(opts1, nil)
 	r.Handle("/docs1", sh1)*/
 
-	r.Route("/user", func(r chi.Router) {
+	r.Route("/users", func(r chi.Router) {
 
 		r.Get("/list", user.HandlerList(s.Users))
 		r.Get("/list/range", user.HandlerListRange(s.Users))
 		r.Get("/id/{id}", user.HandlerFind(s.Users))
 		r.Post("/create", user.HandlerCreate(s.Users))
+
+	})
+
+	r.Route("/comments", func(r chi.Router) {
+
+		r.Get("/delete/id/{id}", comment.HandlerDelete(s.Comments))
 
 	})
 

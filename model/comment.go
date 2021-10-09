@@ -6,7 +6,7 @@ type CommentStore interface {
 	GetAllBySlug(string) ([]*Comment, error)
 	GetByID(uint64) (*Comment, error)
 	Create(*Comment) (int64, error)
-	Delete(*Comment) (int64, error)
+	Delete(int64) (int64, error)
 }
 
 type Comment struct {

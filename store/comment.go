@@ -17,7 +17,37 @@ func NewCommentStore(db *sql.DB) model.CommentStore {
 }
 
 func (cs *commentStore) GetAllBySlug(s string) ([]*model.Comment, error) {
-	panic("implement me")
+
+	var comments []*model.Comment
+
+	rows, err := cs.db.Query("SELECT * FROM comments WHERE")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment model.Comment
+
+		err = rows.Scan(
+			&comment.CommentId,
+			&comment.ArticleId,
+			&comment.Body,
+			&comment.Author,
+			&comment.CreatedAt,
+			&comment.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		comments = append(comments, &comment)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return comments, nil
 }
 
 func (cs *commentStore) GetByID(id uint64) (*model.Comment, error) {
@@ -56,11 +86,40 @@ func (cs *commentStore) Create(comment *model.Comment) (int64, error) {
 	if execErr != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr != nil {
-			fmt.Printf("insert failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
 			return 0, rollbackErr
 		}
 
 		fmt.Printf("insert failed: %v", execErr)
+		return 0, execErr
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, nil
+	}
+
+	return rowsAffected, nil
+}
+
+func (cs *commentStore) Delete(id int64) (int64, error) {
+	tx, err := cs.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+
+	query := "DELETE FROM comments where comment_id = $1"
+
+	result, execErr := tx.Exec(query, id)
+	if execErr != nil {
+		rollbackErr := tx.Rollback()
+		if rollbackErr != nil {
+			return 0, rollbackErr
+		}
 		return 0, execErr
 	}
 
@@ -71,14 +130,8 @@ func (cs *commentStore) Create(comment *model.Comment) (int64, error) {
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		fmt.Println(err)
-		return 1, nil
+		return 0, nil
 	}
 
 	return rowsAffected, nil
 }
-
-func (cs *commentStore) Delete(comment *model.Comment) (int64, error) {
-	panic("implement me")
-}
-
