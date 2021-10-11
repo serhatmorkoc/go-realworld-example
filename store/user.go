@@ -2,7 +2,6 @@ package store
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 )
 
@@ -22,7 +21,7 @@ func (us *userStore) GetById(id int64) (*model.User, error) {
 	err := us.db.QueryRow("SELECT * FROM users where user_id = $1 LIMIT 1", id).Scan(
 		&user.UserId,
 		&user.Email,
-		&user.Token,
+		&user.Password,
 		&user.UserName,
 		&user.Bio,
 		&user.Image,
@@ -46,7 +45,7 @@ func (us *userStore) GetByEmail(s string) (*model.User, error) {
 	err := us.db.QueryRow("SELECT * FROM users where email = $1 LIMIT 1", s).Scan(
 		&user.UserId,
 		&user.Email,
-		&user.Token,
+		&user.Password,
 		&user.UserName,
 		&user.Bio,
 		&user.Image,
@@ -70,7 +69,7 @@ func (us *userStore) GetByUsername(s string) (*model.User, error) {
 	err := us.db.QueryRow("SELECT * FROM users where username = $1 LIMIT 1", s).Scan(
 		&user.UserId,
 		&user.Email,
-		&user.Token,
+		&user.Password,
 		&user.UserName,
 		&user.Bio,
 		&user.Image,
@@ -90,33 +89,33 @@ func (us *userStore) GetByUsername(s string) (*model.User, error) {
 
 func (us *userStore) Create(user *model.User) (int64, error) {
 
+	if err := user.Validate(); err != nil {
+		return 0, err
+	}
+
 	tx, err := us.db.Begin()
 	if err != nil {
 		return 0, err
 	}
 
-	query := "INSERT INTO public.users (email, token, username, bio, image, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id"
+	query := "INSERT INTO public.users (email, password, username, bio, image, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id"
 
-	result, execErr := tx.Exec(query, user.Email, user.Token, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
+	result, execErr := tx.Exec(query, user.Email, user.Password, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
 	if execErr != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr != nil {
-			fmt.Printf("insert failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
 			return 0, rollbackErr
 		}
 
-		fmt.Printf("insert failed: %v", execErr)
 		return 0, execErr
 	}
 
 	if err := tx.Commit(); err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		fmt.Println(err)
 		return 1, nil
 	}
 
@@ -130,11 +129,11 @@ func (us *userStore) Update(user *model.User) (int64, error) {
 		return 0, err
 	}
 
-	query := "UPDATE users SET email=:email, token=:token, username=:username, bio=:bio, image=:image, created_at=:created_at, updated_at=:updated_at  WHERE user_id=:user_id RETURNING user_id"
+	query := "UPDATE users SET email=:email, password=:password, username=:username, bio=:bio, image=:image, created_at=:created_at, updated_at=:updated_at  WHERE user_id=:user_id RETURNING user_id"
 
 	result, execErr := tx.Exec(query,
 		sql.Named("email", user.Email),
-		sql.Named("token", user.Token),
+		sql.Named("password", user.Password),
 		sql.Named("username", user.UserName),
 		sql.Named("bio", user.Bio),
 		sql.Named("image", user.Image),
@@ -145,22 +144,18 @@ func (us *userStore) Update(user *model.User) (int64, error) {
 	if execErr != nil {
 		rollbackErr := tx.Rollback()
 		if rollbackErr != nil {
-			fmt.Printf("update failed: %v, unable to rollback: %v\n", execErr, rollbackErr)
 			return 0, rollbackErr
 		}
 
-		fmt.Printf("update failed: %v", execErr)
 		return 0, execErr
 	}
 
 	if err := tx.Commit(); err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		fmt.Println(err)
 		return 1, nil
 	}
 
@@ -187,7 +182,7 @@ func (us *userStore) GetAll() ([]*model.User, error) {
 		err = rows.Scan(
 			&user.UserId,
 			&user.Email,
-			&user.Token,
+			&user.Password,
 			&user.UserName,
 			&user.Bio,
 			&user.Image,
@@ -225,7 +220,7 @@ func (us *userStore) GetAllRange(params model.UserParams) ([]*model.User, error)
 		err = rows.Scan(
 			&user.UserId,
 			&user.Email,
-			&user.Token,
+			&user.Password,
 			&user.UserName,
 			&user.Bio,
 			&user.Image,

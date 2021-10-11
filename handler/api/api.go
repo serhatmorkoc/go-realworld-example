@@ -57,24 +57,19 @@ func (s Server) Handler() http.Handler {
 	r.Handle("/docs1", sh1)*/
 
 	r.Route("/users", func(r chi.Router) {
+		r.Post("/create", user.HandlerCreate(s.Users))
 
 		r.Get("/list", user.HandlerList(s.Users))
 		r.Get("/list/range", user.HandlerListRange(s.Users))
 		r.Get("/id/{id}", user.HandlerFind(s.Users))
-		r.Post("/create", user.HandlerCreate(s.Users))
-
 	})
 
 	r.Route("/comments", func(r chi.Router) {
-
 		r.Get("/delete/id/{id}", comment.HandlerDelete(s.Comments))
-
 	})
 
 	r.Route("/articles", func(r chi.Router) {
-
 		r.Post("/create", article.HandlerCreate(s.Articles))
-
 	})
 
 	return r

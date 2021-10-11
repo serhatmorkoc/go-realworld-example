@@ -5,21 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b838081e-4749-4647-b67f-94afe11db250" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/database/migrate/files/001_create_table_article.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/handler/api/article/article.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/store/article.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conduit.postman_collection.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/conduit.swagger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrate/files/001_create_table_user.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrate/files/001_create_table_user.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrate/postgres/ddl_gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrate/postgres/ddl_gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seed/seed.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/seed/seed.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seed/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/database/seed/users.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handler/api/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/api/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/article.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handler/api/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/api/user/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/store/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/comment_test.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/store/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +54,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="configurable..is.expanded" value="false" />
+    <property name="configurable..is.expanded" value="true" />
     <property name="configurable.GoLibrariesConfigurable.is.expanded" value="true" />
     <property name="go.formatter.settings.were.checked" value="true" />
     <property name="go.import.settings.migrated" value="true" />
@@ -61,7 +62,7 @@
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -80,41 +81,41 @@
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/main.go" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
-      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <pattern value="^\QTestComment\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
-      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <pattern value="^\QTestComment\E$/^\QCreate\E$" />
       <method v="2" />
     </configuration>
     <configuration name="comment_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
-      <framework value="gotest" />
       <kind value="FILE" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/store/comment_test.go" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="generated-requests#1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" runType="Run single request">
@@ -166,6 +167,11 @@
           <url>file://$PROJECT_DIR$/../../go-chi/chi/middleware/logger.go</url>
           <line>108</line>
           <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/store/user.go</url>
+          <line>91</line>
+          <option name="timeStamp" value="66" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

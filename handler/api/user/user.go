@@ -8,7 +8,53 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 )
+
+func HandlerCreate(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var req model.UserRequest
+		body, err := io.ReadAll(r.Body)
+		defer r.Body.Close()
+
+		if err := json.Unmarshal(body, &req); err != nil {
+			render.ErrorJSON(w, err, http.StatusBadRequest)
+			return
+		}
+
+		user := model.User{
+			UserName:  req.Username,
+			Email:     req.Email,
+			Password:  req.Password,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+
+		affected, err := us.Create(&user)
+		if err != nil {
+			render.ErrorJSON(w, err, http.StatusBadRequest)
+			return
+		}
+
+		if affected == 0 {
+			render.ErrorJSON(w, model.ErrOperationFailed, http.StatusBadRequest)
+			return
+		}
+
+		res := model.Response{
+			User: model.UserResponse{
+				Username: user.UserName,
+				Email:    user.Email,
+				Image:    user.Image,
+				Bio:      user.Bio,
+				Token:    "token",
+			}}
+
+		render.SingleSuccessJSON(w, res)
+
+	}
+}
 
 func HandlerFind(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +81,7 @@ func HandlerList(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		render.MultipleSuccessJSON(w,users)
+		render.MultipleSuccessJSON(w, users)
 	}
 }
 
@@ -44,43 +90,14 @@ func HandlerListRange(us model.UserStore) http.HandlerFunc {
 
 		users, err := us.GetAllRange(
 			model.UserParams{
-			Sort: true,
-			Page: 10,
-			Size: 5,
-		})
+				Page: 10,
+				Size: 5,
+			})
 		if err != nil {
 			render.ErrorJSON(w, err, http.StatusBadRequest)
 			return
 		}
 
-		render.MultipleSuccessJSON(w,users)
-	}
-}
-
-func HandlerCreate(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		body, err := io.ReadAll(r.Body)
-		defer r.Body.Close()
-
-		var user model.User
-		if err := json.Unmarshal(body, &user); err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
-			return
-		}
-
-		affected, err := us.Create(&user)
-		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
-			return
-		}
-
-		if affected == 0 {
-			render.ErrorJSON(w, model.ErrOperationFailed, http.StatusBadRequest)
-			return
-		}
-
-		render.SingleSuccessJSON(w, user)
-
+		render.MultipleSuccessJSON(w, users)
 	}
 }

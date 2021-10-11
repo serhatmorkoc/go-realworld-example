@@ -31,3 +31,7 @@ func authError(w http.ResponseWriter, err error, clientMsg string) {
 
     return
 }
+
+--------------
+
+created_at ve updated_at -> ISO8601(UTC)
