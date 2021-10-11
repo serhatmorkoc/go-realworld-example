@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api/article"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/comment"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
 	"github.com/serhatmorkoc/go-realworld-example/model"
@@ -12,12 +13,14 @@ import (
 type Server struct {
 	Users model.UserStore
 	Comments model.CommentStore
+	Articles model.ArticleStore
 }
 
-func New(users model.UserStore, comments model.CommentStore) Server {
+func New(users model.UserStore, comments model.CommentStore, articles model.ArticleStore) Server {
 	return Server{
 		Users: users,
 		Comments: comments,
+		Articles: articles,
 
 	}
 }
@@ -65,6 +68,12 @@ func (s Server) Handler() http.Handler {
 	r.Route("/comments", func(r chi.Router) {
 
 		r.Get("/delete/id/{id}", comment.HandlerDelete(s.Comments))
+
+	})
+
+	r.Route("/articles", func(r chi.Router) {
+
+		r.Post("/create", article.HandlerCreate(s.Articles))
 
 	})
 

@@ -5,10 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b838081e-4749-4647-b67f-94afe11db250" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/database/migrate/files/001_create_table_article.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/handler/api/article/article.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/store/article.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrate/postgres/ddl_gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrate/postgres/ddl_gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seed/seed.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/seed/seed.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handler/api/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/api/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler/api/comment/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/api/comment/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/article.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/store/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/comment.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/store/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/user.go" afterDir="false" />
     </list>
@@ -24,9 +33,12 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../../Program Files/Go" />
+  <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1ygm3LTR1qGEGlTJbaJYXmSfYff" />
   <component name="ProjectLevelVcsManager">
@@ -47,8 +59,9 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../go-busticketservice" />
-    <property name="settings.editor.selected.configurable" value="FeaturesTrainerSettingsPanel" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -67,41 +80,41 @@
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
+      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
       <pattern value="^\QTestComment\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
+      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
       <pattern value="^\QTestComment\E$/^\QCreate\E$" />
       <method v="2" />
     </configuration>
     <configuration name="comment_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
+      <framework value="gotest" />
       <kind value="FILE" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/store/comment_test.go" />
-      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="generated-requests#1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" runType="Run single request">
@@ -132,6 +145,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

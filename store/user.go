@@ -37,8 +37,6 @@ func (us *userStore) GetById(id int64) (*model.User, error) {
 		return nil, err
 	}
 
-
-
 	return &user, nil
 }
 
@@ -96,7 +94,6 @@ func (us *userStore) Create(user *model.User) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer tx.Rollback()
 
 	query := "INSERT INTO public.users (email, token, username, bio, image, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id"
 
@@ -132,7 +129,6 @@ func (us *userStore) Update(user *model.User) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer tx.Rollback()
 
 	query := "UPDATE users SET email=:email, token=:token, username=:username, bio=:bio, image=:image, created_at=:created_at, updated_at=:updated_at  WHERE user_id=:user_id RETURNING user_id"
 
@@ -177,12 +173,6 @@ func (us *userStore) Delete(user *model.User) error {
 
 func (us *userStore) GetAll() ([]*model.User, error) {
 
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-		}
-	}()
-
 	var users []*model.User
 
 	rows, err := us.db.Query("SELECT * FROM users")
@@ -219,15 +209,7 @@ func (us *userStore) GetAll() ([]*model.User, error) {
 
 func (us *userStore) GetAllRange(params model.UserParams) ([]*model.User, error) {
 
-	query := "SELECT * FROM users ORDER BY %s LIMIT %d OFFSET %d"
-
-	//TODO:
-	switch {
-	case params.Sort:
-		query = fmt.Sprintf(query, "user_id DESC", params.Size, params.Page)
-	default:
-		query = fmt.Sprintf(query, "user_id ASC", params.Size, params.Page)
-	}
+	query := "SELECT * FROM users LIMIT %d OFFSET %d"
 
 	var users []*model.User
 

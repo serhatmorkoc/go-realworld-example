@@ -20,7 +20,6 @@ type UserStore interface {
 }
 
 type UserParams struct {
-	Sort bool
 	Page int64
 	Size int64
 }

@@ -16,7 +16,7 @@ func NewCommentStore(db *sql.DB) model.CommentStore {
 	}
 }
 
-func (cs *commentStore) GetAllBySlug(s string) ([]*model.Comment, error) {
+func (cs *commentStore) GetAllBySlug(slug string) ([]*model.Comment, error) {
 
 	var comments []*model.Comment
 
@@ -50,7 +50,7 @@ func (cs *commentStore) GetAllBySlug(s string) ([]*model.Comment, error) {
 	return comments, nil
 }
 
-func (cs *commentStore) GetByID(id uint64) (*model.Comment, error) {
+func (cs *commentStore) GetByID(id int64) (*model.Comment, error) {
 
 	var comment model.Comment
 	err := cs.db.QueryRow("SELECT * FROM comments WHERE comment_id=$1 LIMIT 1", id).Scan(
@@ -78,7 +78,6 @@ func (cs *commentStore) Create(comment *model.Comment) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer tx.Rollback()
 
 	query := "INSERT INTO comments (article_id, body, author, created_at, updated_at) VALUES($1,$2,$3,$4,$5)"
 
@@ -88,8 +87,6 @@ func (cs *commentStore) Create(comment *model.Comment) (int64, error) {
 		if rollbackErr != nil {
 			return 0, rollbackErr
 		}
-
-		fmt.Printf("insert failed: %v", execErr)
 		return 0, execErr
 	}
 
@@ -110,7 +107,6 @@ func (cs *commentStore) Delete(id int64) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer tx.Rollback()
 
 	query := "DELETE FROM comments where comment_id = $1"
 

@@ -9,7 +9,7 @@ import (
 
 func Seed(us model.UserStore) {
 
-	file, err := ioutil.ReadFile("db/seed/users.json")
+	file, err := ioutil.ReadFile("database/seed/users.json")
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -46,13 +46,14 @@ func main() {
 	}
 
 	us := store.NewUserStore(db)
-	cm := store.NewCommentStore(db)
+	cs := store.NewCommentStore(db)
+	as := store.NewArticleStore(db)
 
 	if sd {
 		seed.Seed(us)
 	}
 
-	r := api.New(us,cm)
+	r := api.New(us,cs,as)
 	h := r.Handler()
 
 	s := &http.Server{
