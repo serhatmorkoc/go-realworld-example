@@ -2,29 +2,28 @@ package seed
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/serhatmorkoc/go-realworld-example/model"
-	"io/ioutil"
+	"os"
 )
 
-func Seed(us model.UserStore) {
+func Seed(us model.UserStore) error {
 
-	file, err := ioutil.ReadFile("database/seed/users.json")
+	file, err := os.ReadFile("database/seed/users.json")
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	var users []model.User
 	if err := json.Unmarshal(file, &users); err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	for _, item := range users {
 		_, err := us.Create(&item)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 	}
+
+	return nil
 }

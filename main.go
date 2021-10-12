@@ -50,7 +50,9 @@ func main() {
 	as := store.NewArticleStore(db)
 
 	if sd {
-		seed.Seed(us)
+		if err = seed.Seed(us); err != nil {
+			panic(err)
+		}
 	}
 
 	r := api.New(us,cs,as)

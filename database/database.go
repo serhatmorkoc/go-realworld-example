@@ -43,7 +43,7 @@ func pingDatabase(db *sql.DB) (err error) {
 		time.Sleep(1 * time.Second)
 	}
 
-	return errors.New("")
+	return errors.New("database connection failed")
 }
 
 func setupDatabase(db *sql.DB, driver string) error {
