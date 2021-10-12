@@ -25,28 +25,6 @@ type UserStore interface {
 	IsFollower(userID, followerID uint) (bool, error)
 }
 
-type Request struct {
-	User UserRequest `json:"user"`
-}
-
-type UserRequest struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type Response struct {
-	User UserResponse `json:"user"`
-}
-
-type UserResponse struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Image    string `json:"image"`
-	Bio      string `json:"bio"`
-	Token    string `json:"token"`
-}
-
 type UserParams struct {
 	Page int64
 	Size int64
@@ -66,15 +44,15 @@ type User struct {
 func (user *User) Validate() error {
 
 	if len(user.UserName) == 0 {
-		return errors.New("username cannot be empty")
+		return errors.New("username should not be empty")
 	}
 
 	if len(user.Email) == 0 {
-		return errors.New("email cannot be empty")
+		return errors.New("email should not be empty")
 	}
 
 	if len(user.Password) == 0 {
-		return errors.New("email cannot be empty")
+		return errors.New("email should not be empty")
 	}
 
 	return nil

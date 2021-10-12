@@ -3,42 +3,35 @@ package render
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api/errors"
 	"net/http"
 )
 
-type response struct {
-	Success bool        `json:"success"`
-	Status  int         `json:"status"`
-	Error   string      `json:"error"`
-	Data    interface{} `json:"data"`
+func ErrorCode(w http.ResponseWriter, err error, status int) {
+	JSON(w, &errors.Error{Message: err.Error()}, status)
 }
 
-func ErrorJSON(w http.ResponseWriter, err error, status int) {
-	jSON(w, response{
-		Success: false,
-		Status: status,
-		Error:  err.Error(),
-		Data:   []interface{}{},
-	})
+func InternalError(w http.ResponseWriter, err error) {
+	ErrorCode(w, err, http.StatusInternalServerError)
 }
 
-func SingleSuccessJSON(w http.ResponseWriter, v interface{}) {
-	jSON(w, response{
-		Success: true,
-		Status: http.StatusOK,
-		Data:   []interface{}{v},
-	})
+func NotFound(w http.ResponseWriter, err error) {
+	ErrorCode(w, err, http.StatusNotFound)
 }
 
-func MultipleSuccessJSON(w http.ResponseWriter, v interface{}) {
-	jSON(w, response{
-		Success: true,
-		Status: http.StatusOK,
-		Data:   v,
-	})
+func Unauthorized(w http.ResponseWriter, err error) {
+	ErrorCode(w, err, http.StatusUnauthorized)
 }
 
-func jSON(w http.ResponseWriter, v interface{}) {
+func Forbidden(w http.ResponseWriter, err error) {
+	ErrorCode(w, err, http.StatusForbidden)
+}
+
+func BadRequest(w http.ResponseWriter, err error) {
+	ErrorCode(w, err, http.StatusBadRequest)
+}
+
+func JSON(w http.ResponseWriter, v interface{}, status int) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
@@ -52,6 +45,9 @@ func jSON(w http.ResponseWriter, v interface{}) {
 		return
 	}
 
-	w.Write(buf.Bytes())
-
+	_, err := w.Write(buf.Bytes())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

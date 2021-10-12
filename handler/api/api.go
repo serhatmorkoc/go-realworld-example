@@ -11,7 +11,7 @@ import (
 )
 
 type Server struct {
-	Users model.UserStore
+	Users    model.UserStore
 	Comments model.CommentStore
 	Articles model.ArticleStore
 }
@@ -59,9 +59,9 @@ func (s Server) Handler() http.Handler {
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/create", user.HandlerCreate(s.Users))
 
-		r.Get("/list", user.HandlerList(s.Users))
+/*		r.Get("/list", user.HandlerList(s.Users))
 		r.Get("/list/range", user.HandlerListRange(s.Users))
-		r.Get("/id/{id}", user.HandlerFind(s.Users))
+		r.Get("/id/{id}", user.HandlerFind(s.Users))*/
 	})
 
 	r.Route("/comments", func(r chi.Router) {

@@ -19,20 +19,21 @@ func HandlerCreate(as model.ArticleStore) http.HandlerFunc {
 
 		var article model.Article
 		if err := json.Unmarshal(body, &article); err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
+			render.BadRequest(w, err)
 			return
 		}
 
 		affected, err := as.Create(&article)
 		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
+			render.BadRequest(w, err)
 			return
 		}
 		if affected == 0 {
-			render.ErrorJSON(w, model.ErrOperationFailed, http.StatusBadRequest)
+			//render.ErrorJSON(w, model.ErrOperationFailed, http.StatusBadRequest)
+			render.BadRequest(w, err)
 			return
 		}
 
-		render.SingleSuccessJSON(w, article)
+		render.JSON(w, article, http.StatusCreated)
 	}
 }

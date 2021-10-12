@@ -15,16 +15,16 @@ func HandlerDelete(store model.CommentStore) http.HandlerFunc {
 
 		v, err := strconv.ParseInt(val, 10, 64)
 		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
+			render.BadRequest(w, err)
 			return
 		}
 
 		result, err := store.Delete(v)
 		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
+			render.BadRequest(w, err)
 			return
 		}
 
-		render.SingleSuccessJSON(w, result)
+		render.JSON(w, result, http.StatusOK)
 	}
 }
