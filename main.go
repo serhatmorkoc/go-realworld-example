@@ -67,6 +67,8 @@ func main() {
 	r := api.New(us, cs, as)
 	h := r.Handler()
 
+	logrus.Info("application starting")
+
 	var srv Server
 	go func() {
 		if err = srv.Run("3000",h); err != nil{
@@ -86,10 +88,11 @@ func main() {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}*/
 
+	logrus.Info("application shut down")
+
 	if err := db.Close(); err != nil {
 		logrus.Errorf("error occured on database connection close: %s", err.Error())
 	}
-
 }
 
 func (s *Server) Run(port string, handler http.Handler) error {
