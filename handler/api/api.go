@@ -3,8 +3,6 @@ package api
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/serhatmorkoc/go-realworld-example/handler/api/article"
-	"github.com/serhatmorkoc/go-realworld-example/handler/api/comment"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"net/http"
@@ -18,10 +16,9 @@ type Server struct {
 
 func New(users model.UserStore, comments model.CommentStore, articles model.ArticleStore) Server {
 	return Server{
-		Users: users,
+		Users:    users,
 		Comments: comments,
 		Articles: articles,
-
 	}
 }
 
@@ -47,31 +44,35 @@ func (s Server) Handler() http.Handler {
 
 	r.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
-	// documentation for developers
-/*	opts := sw.SwaggerUIOpts{SpecURL: "/swagger.yaml"}
-	sh := sw.SwaggerUI(opts, nil)
-	r.Handle("/docs", sh)
+	/*
+		// documentation for developers
+		opts := sw.SwaggerUIOpts{SpecURL: "/swagger.yaml"}
+		sh := sw.SwaggerUI(opts, nil)
+		r.Handle("/docs", sh)
 
-	opts1 := sw.RedocOpts{SpecURL: "/swagger.yaml", Path: "docs1"}
-	sh1 := sw.Redoc(opts1, nil)
-	r.Handle("/docs1", sh1)*/
+		opts1 := sw.RedocOpts{SpecURL: "/swagger.yaml", Path: "docs1"}
+		sh1 := sw.Redoc(opts1, nil)
+		r.Handle("/docs1", sh1)*/
 
-	r.Route("/users", func(r chi.Router) {
-		r.Post("/create", user.HandlerCreate(s.Users))
-
-/*		r.Get("/list", user.HandlerList(s.Users))
-		r.Get("/list/range", user.HandlerListRange(s.Users))
-		r.Get("/id/{id}", user.HandlerFind(s.Users))*/
+	r.Route("/api/users", func(r chi.Router) {
+		r.Post("/", user.HandlerCreate(s.Users))
 	})
 
-	r.Route("/comments", func(r chi.Router) {
-		r.Get("/delete/id/{id}", comment.HandlerDelete(s.Comments))
+	r.Route("/api/user", func(r chi.Router) {
+		r.Put("/", user.HandlerUpdate(s.Users))
 	})
 
-	r.Route("/articles", func(r chi.Router) {
-		r.Post("/create", article.HandlerCreate(s.Articles))
+	r.Route("/api/profiles", func(r chi.Router) {
+		r.Get("/{username}", user.HandlerProfile(s.Users))
 	})
+
+	/*	r.Route("/comments", func(r chi.Router) {
+			r.Get("/delete/id/{id}", comment.HandlerDelete(s.Comments))
+		})
+
+		r.Route("/articles", func(r chi.Router) {
+			r.Post("/create", article.HandlerCreate(s.Articles))
+		})*/
 
 	return r
 }
-
