@@ -13,7 +13,7 @@ type UserStore interface {
 	GetById(id int64) (*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
-	Create(*User) (int64, error)
+	Create(*User) (*User, error)
 	Update(*User) (int64, error)
 	Delete(*User) error
 
@@ -31,7 +31,7 @@ type UserParams struct {
 }
 
 type User struct {
-	UserId    int64     `json:"user_id"`
+	UserId    uint     `json:"user_id"`
 	UserName  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`

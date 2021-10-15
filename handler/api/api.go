@@ -4,6 +4,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
+	middleware1 "github.com/serhatmorkoc/go-realworld-example/middleware"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"net/http"
 )
@@ -42,9 +43,9 @@ func (s Server) Handler() http.Handler {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.NoCache)
 
+	/*
 	r.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
-	/*
 		// documentation for developers
 		opts := sw.SwaggerUIOpts{SpecURL: "/swagger.yaml"}
 		sh := sw.SwaggerUI(opts, nil)
@@ -59,20 +60,16 @@ func (s Server) Handler() http.Handler {
 	})
 
 	r.Route("/api/user", func(r chi.Router) {
+
+		r.Use(middleware1.Ver)
 		r.Put("/", user.HandlerUpdate(s.Users))
+		r.Get("/", user.HandlerCurrentUser(s.Users))
 	})
 
 	r.Route("/api/profiles", func(r chi.Router) {
 		r.Get("/{username}", user.HandlerProfile(s.Users))
 	})
 
-	/*	r.Route("/comments", func(r chi.Router) {
-			r.Get("/delete/id/{id}", comment.HandlerDelete(s.Comments))
-		})
-
-		r.Route("/articles", func(r chi.Router) {
-			r.Post("/create", article.HandlerCreate(s.Articles))
-		})*/
 
 	return r
 }

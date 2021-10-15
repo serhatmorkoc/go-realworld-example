@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 )
 
@@ -87,39 +88,36 @@ func (us *userStore) GetByUsername(s string) (*model.User, error) {
 	return &user, nil
 }
 
-func (us *userStore) Create(user *model.User) (int64, error) {
+func (us *userStore) Create(user *model.User) (*model.User, error) {
 
 	if err := user.Validate(); err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	tx, err := us.db.Begin()
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	query := "INSERT INTO public.users (email, password, username, bio, image, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id"
-
-	result, execErr := tx.Exec(query, user.Email, user.Password, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
-	if execErr != nil {
-		rollbackErr := tx.Rollback()
-		if rollbackErr != nil {
-			return 0, rollbackErr
+	query := "INSERT INTO users (email, password, username, bio, image, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING user_id"
+	row := tx.QueryRow(query, user.Email, user.Password, user.UserName, user.Bio, user.Image, user.CreatedAt, user.UpdatedAt)
+	err = row.Scan(&user.UserId)
+	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			return nil, rollbackErr
 		}
+		return nil, err
+	}
 
-		return 0, execErr
+	if user.UserId == 0 {
+		return nil, errors.New("")
 	}
 
 	if err := tx.Commit(); err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return 1, nil
-	}
-
-	return rowsAffected, nil
+	return user, nil
 }
 
 func (us *userStore) Update(user *model.User) (int64, error) {

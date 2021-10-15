@@ -5,14 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b838081e-4749-4647-b67f-94afe11db250" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/handler/api/auth/auth.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/middleware/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrate/files/001_create_table_article.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/001_create_table_article.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrate/files/001_create_table_comment.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/001_create_table_comment.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrate/files/001_create_table_user.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema/001_create_table_user.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handler/api/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/api/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler/api/request/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler/api/response/user.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handler/api/auth/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/auth/auth.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handler/api/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/api/user/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/store/user.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +62,9 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\service\auth" />
+      <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\docs" />
+      <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\schema" />
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\db\migrate\postgres" />
     </key>
   </component>
@@ -159,6 +166,21 @@
           <url>file://$PROJECT_DIR$/../../go-chi/chi/middleware/logger.go</url>
           <line>108</line>
           <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/store/user.go</url>
+          <line>112</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/handler/api/user/user.go</url>
+          <line>131</line>
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/handler/api/user/user.go</url>
+          <line>176</line>
+          <option name="timeStamp" value="82" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

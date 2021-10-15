@@ -3,9 +3,11 @@ package user
 //noinspection
 import (
 	"encoding/json"
-	"github.com/serhatmorkoc/go-realworld-example/handler/api/auth"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/serhatmorkoc/go-realworld-example/handler/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
+	"github.com/serhatmorkoc/go-realworld-example/service/auth"
 	"io"
 	"net/http"
 	"time"
@@ -86,24 +88,21 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 			UpdatedAt: time.Now(),
 		}
 
-		//todo: create methodu geriye user dönecek şekilde tekrar düzenleme yapılacak.
-		affected, err := us.Create(&user)
+		result, err := us.Create(&user)
 		if err != nil {
 			render.BadRequest(w, err)
 			return
 		}
 
-		//todo: affected error içinde gelmesi şeklinde düzenleme yapılacak.
-		if affected == 0 {
-			//todo: status kodu tekrar düzenleme yapılacak.
-			//render.ErrorJSON(w, model.ErrOperationFailed, http.StatusBadRequest)
+		if result == nil {
 			render.BadRequest(w, err)
 			return
 		}
 
-		token, err := auth.GenerateToken(1)
+		token, err := auth.GenerateToken(result.UserId)
 		if err != nil {
 			render.BadRequest(w, err)
+			return
 		}
 
 		var res CreateUserResponse
@@ -114,6 +113,16 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 		res.User.Token = token
 
 		render.JSON(w, res, http.StatusCreated)
+	}
+}
+
+func HandlerCurrentUser(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		props, _ := r.Context().Value("props").(jwt.MapClaims)
+
+		str := fmt.Sprintf("%v", props["user_id"])
+		w.Write([]byte(str))
 	}
 }
 
