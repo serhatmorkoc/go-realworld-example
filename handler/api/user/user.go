@@ -99,7 +99,7 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		token, err := auth.GenerateToken(result.UserId)
+		token, err := auth.GenerateToken(result.UserId, result.UserName)
 		if err != nil {
 			render.BadRequest(w, err)
 			return
@@ -119,9 +119,9 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 func HandlerCurrentUser(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		props, _ := r.Context().Value("props").(jwt.MapClaims)
+		props, _ := r.Context().Value("userAuthCtx").(jwt.MapClaims)
 
-		str := fmt.Sprintf("%v", props["user_id"])
+		str := fmt.Sprintf("user id:%v - user name:%v", props["user_id"], props["user_name"])
 		w.Write([]byte(str))
 	}
 }

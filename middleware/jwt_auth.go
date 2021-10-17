@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-func Ver(next http.Handler) http.Handler {
+func ValidateJWT(next http.Handler) http.Handler {
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
-			http.Error(w, "err.Error()", http.StatusUnauthorized)
+			http.Error(w, "authorization not found in header", http.StatusUnauthorized)
 			return
 		}
 		jwtToken := authHeader[1]
@@ -25,12 +25,13 @@ func Ver(next http.Handler) http.Handler {
 			return []byte("secret"), nil
 		})
 		if err != nil {
+			//render.Unauthorized(w,err)
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			ctx := context.WithValue(r.Context(), "props", claims)
+			ctx := context.WithValue(r.Context(), "userAuthCtx", claims)
 			// Access context values in handlers like this
 			// props, _ := r.Context().Value("props").(jwt.MapClaims)
 			next.ServeHTTP(w, r.WithContext(ctx))

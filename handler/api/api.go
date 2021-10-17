@@ -61,7 +61,7 @@ func (s Server) Handler() http.Handler {
 
 	r.Route("/api/user", func(r chi.Router) {
 
-		r.Use(middleware1.Ver)
+		r.Use(middleware1.ValidateJWT)
 		r.Put("/", user.HandlerUpdate(s.Users))
 		r.Get("/", user.HandlerCurrentUser(s.Users))
 	})

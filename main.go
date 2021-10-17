@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/joho/godotenv"
+	"github.com/serhatmorkoc/go-realworld-example/config"
 	"github.com/serhatmorkoc/go-realworld-example/database"
 	"github.com/serhatmorkoc/go-realworld-example/database/seed"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api"
@@ -19,37 +19,26 @@ import (
 
 type Server struct {
 	httpServer *http.Server
+	Config     *config.Config
 }
 
 func main() {
 
 	//logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
+	cfg := config.NewConfig()
 
-	driver := os.Getenv("DB_DRIVER")
-	host := os.Getenv("DB_HOST")
-	port, _ := strconv.Atoi(os.Getenv("DB_PORT"))
-	dbName := os.Getenv("DB_DATABASE")
-	username := os.Getenv("DB_USERNAME")
-	password := os.Getenv("DB_PASSWORD")
-	sd, _ := strconv.ParseBool(os.Getenv("DB_SEED"))
 	logo := os.Getenv("CONSOLE_L")
-	maxConnections, _ := strconv.Atoi(os.Getenv("DB_MAX_CONNECTIONS"))
-
 	fmt.Println(logo)
-	fmt.Printf("driver: %s\n", driver)
-	fmt.Printf("host: %s\n", host)
-	fmt.Printf("port: %d\n", port)
-	fmt.Printf("database: %s\n", dbName)
-	fmt.Printf("username: %s\n", username)
-	fmt.Printf("password: %s\n", password)
-	fmt.Printf("seed: %t\n", sd)
+	fmt.Printf("driver: %s\n", cfg.Database.Driver)
+	fmt.Printf("host: %s\n", cfg.Database.Host)
+	fmt.Printf("port: %s\n", cfg.Database.Port)
+	fmt.Printf("database: %s\n", cfg.Database.Name)
+	fmt.Printf("username: %s\n", cfg.Database.User)
+	fmt.Printf("password: %s\n", cfg.Database.Password)
 	fmt.Println("------------------------------------")
 
-	db, err := database.Connect(driver, host, dbName, username, password, port, maxConnections)
+	db, err := database.Connect(cfg)
 	if err != nil {
 		logrus.Fatalf("error occured on database connection: %s", err.Error())
 	}
@@ -58,6 +47,7 @@ func main() {
 	cs := store.NewCommentStore(db)
 	as := store.NewArticleStore(db)
 
+	sd, _ := strconv.ParseBool(os.Getenv("DB_SEED"))
 	if sd {
 		if err = seed.Seed(us); err != nil {
 			logrus.Fatalf("error occurred on database seed: %s", err.Error())
@@ -71,7 +61,7 @@ func main() {
 
 	var srv Server
 	go func() {
-		if err = srv.Run("3000",h); err != nil{
+		if err = srv.Run(h); err != nil {
 			logrus.Fatalf("error occured while running http server: %s", err.Error())
 		}
 	}()
@@ -84,7 +74,7 @@ func main() {
 
 	logrus.Info("application shutting down")
 
-/*	if err := srv.Shutdown(context.Background()); err != nil {
+	/*	if err := srv.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}*/
 
@@ -95,9 +85,9 @@ func main() {
 	}
 }
 
-func (s *Server) Run(port string, handler http.Handler) error {
+func (s *Server) Run(handler http.Handler) error {
 	s.httpServer = &http.Server{
-		Addr:           ":" + port,
+		Addr:           ":" + "3000",
 		Handler:        handler,
 		MaxHeaderBytes: 1 << 20, // 1 MB
 		ReadTimeout:    10 * time.Second,
