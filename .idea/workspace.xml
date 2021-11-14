@@ -25,7 +25,7 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1ygm3LTR1qGEGlTJbaJYXmSfYff" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -45,10 +45,11 @@
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="go.sdk" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/store/shared" />
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\service\auth" />
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\docs" />
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\schema" />
@@ -67,41 +68,41 @@
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
+      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
       <pattern value="^\QTestComment\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
+      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
       <pattern value="^\QTestComment\E$/^\QCreate\E$" />
       <method v="2" />
     </configuration>
     <configuration name="comment_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
+      <framework value="gotest" />
       <kind value="FILE" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/store/comment_test.go" />
-      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="generated-requests#1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" runType="Run single request">
@@ -132,6 +133,11 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
