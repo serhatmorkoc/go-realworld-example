@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -13,10 +14,9 @@ type UserStore interface {
 	GetById(id int64) (*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
-	Create(*User) (*User, error)
+	Create(context.Context, *User) (*User, error)
 	Update(*User) (int64, error)
 	Delete(*User) error
-
 
 	GetAll() ([]*User, error)
 	GetAllRange(params UserParams) ([]*User, error)
@@ -31,7 +31,7 @@ type UserParams struct {
 }
 
 type User struct {
-	UserId    uint     `json:"user_id"`
+	UserId    uint      `json:"user_id"`
 	UserName  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`

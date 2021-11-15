@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
@@ -26,6 +27,9 @@ func New(users model.UserStore, comments model.CommentStore, articles model.Arti
 func (s Server) Handler() http.Handler {
 	r := chi.NewRouter()
 
+	//TODO
+	ctx := context.Context(context.Background())
+
 	/*"github.com/goware/cors"
 	cors := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -44,32 +48,32 @@ func (s Server) Handler() http.Handler {
 	r.Use(middleware.NoCache)
 
 	/*
-	r.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+		r.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
-		// documentation for developers
-		opts := sw.SwaggerUIOpts{SpecURL: "/swagger.yaml"}
-		sh := sw.SwaggerUI(opts, nil)
-		r.Handle("/docs", sh)
+			// documentation for developers
+			opts := sw.SwaggerUIOpts{SpecURL: "/swagger.yaml"}
+			sh := sw.SwaggerUI(opts, nil)
+			r.Handle("/docs", sh)
 
-		opts1 := sw.RedocOpts{SpecURL: "/swagger.yaml", Path: "docs1"}
-		sh1 := sw.Redoc(opts1, nil)
-		r.Handle("/docs1", sh1)*/
+			opts1 := sw.RedocOpts{SpecURL: "/swagger.yaml", Path: "docs1"}
+			sh1 := sw.Redoc(opts1, nil)
+			r.Handle("/docs1", sh1)*/
 
 	r.Route("/api/users", func(r chi.Router) {
-		r.Post("/", user.HandlerCreate(s.Users))
+		r.Post("/", user.HandleCreate(ctx, s.Users))
+		r.Post("/login", user.HandleFind(s.Users))
 	})
 
 	r.Route("/api/user", func(r chi.Router) {
 
 		r.Use(middleware1.ValidateJWT)
-		r.Put("/", user.HandlerUpdate(s.Users))
-		r.Get("/", user.HandlerCurrentUser(s.Users))
+		r.Put("/", user.HandleUpdate(s.Users))
+		r.Get("/", user.HandleCurrentUser(s.Users))
 	})
 
 	r.Route("/api/profiles", func(r chi.Router) {
-		r.Get("/{username}", user.HandlerProfile(s.Users))
+		r.Get("/{username}", user.HandleProfile(s.Users))
 	})
-
 
 	return r
 }

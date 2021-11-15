@@ -1,14 +1,16 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"github.com/serhatmorkoc/go-realworld-example/config"
-	"github.com/serhatmorkoc/go-realworld-example/database"
-	"github.com/serhatmorkoc/go-realworld-example/database/seed"
+	"github.com/joho/godotenv"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api"
-	"github.com/serhatmorkoc/go-realworld-example/store"
+	as "github.com/serhatmorkoc/go-realworld-example/store/article"
+	cs "github.com/serhatmorkoc/go-realworld-example/store/comment"
+	"github.com/serhatmorkoc/go-realworld-example/store/shared/db"
+	"github.com/serhatmorkoc/go-realworld-example/store/shared/db/seed"
+	us "github.com/serhatmorkoc/go-realworld-example/store/user"
 	"github.com/sirupsen/logrus"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,56 +19,61 @@ import (
 	"time"
 )
 
-type Server struct {
-	httpServer *http.Server
-	Config     *config.Config
-}
-
 func main() {
 
-	//logrus.SetFormatter(new(logrus.JSONFormatter))
-
-	cfg := config.NewConfig()
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
 
 	logo := os.Getenv("CONSOLE_L")
 	fmt.Println(logo)
-	fmt.Printf("driver: %s\n", cfg.Database.Driver)
-	fmt.Printf("host: %s\n", cfg.Database.Host)
-	fmt.Printf("port: %s\n", cfg.Database.Port)
-	fmt.Printf("database: %s\n", cfg.Database.Name)
-	fmt.Printf("username: %s\n", cfg.Database.User)
-	fmt.Printf("password: %s\n", cfg.Database.Password)
-	fmt.Println("------------------------------------")
+	driver := os.Getenv("DB_DRIVER")
+	host := os.Getenv("DB_HOST")
+	database := os.Getenv("DB_DATABASE")
+	port, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+	user := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+	maxOpenConnections, _ := strconv.Atoi(os.Getenv("DB_MAX_OPEN_CONNECTIONS"))
 
-	db, err := database.Connect(cfg)
+	db, err := db.Connection(driver, host, database, user, password, port, maxOpenConnections)
 	if err != nil {
-		logrus.Fatalf("error occured on database connection: %s", err.Error())
+		log.Fatal(err)
 	}
 
-	us := store.NewUserStore(db)
-	cs := store.NewCommentStore(db)
-	as := store.NewArticleStore(db)
+	articleStore := as.NewArticleStore(db)
+	userStore := us.NewUserStore(db)
+	commentStore := cs.NewCommentStore(db)
+
+	r := api.New(userStore, commentStore, articleStore)
+	h := r.Handler()
 
 	sd, _ := strconv.ParseBool(os.Getenv("DB_SEED"))
 	if sd {
-		if err = seed.Seed(us); err != nil {
+		if err = seed.Seed(userStore); err != nil {
 			logrus.Fatalf("error occurred on database seed: %s", err.Error())
 		}
 	}
 
-	r := api.New(us, cs, as)
-	h := r.Handler()
-
 	logrus.Info("application starting")
 
-	var srv Server
+	log.Println("application starting")
+
 	go func() {
-		if err = srv.Run(h); err != nil {
-			logrus.Fatalf("error occured while running http server: %s", err.Error())
+		s := http.Server{
+			Addr:           ":8080",
+			Handler:        h,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			MaxHeaderBytes: 1 << 20, //1mb
+		}
+
+		err := s.ListenAndServe()
+		if err != nil {
+			log.Println("application failed to start")
+			panic(err)
 		}
 	}()
-
-	logrus.Info("application started")
+	log.Println("application started")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
@@ -74,29 +81,9 @@ func main() {
 
 	logrus.Info("application shutting down")
 
-	/*	if err := srv.Shutdown(context.Background()); err != nil {
-		logrus.Errorf("error occured on server shutting down: %s", err.Error())
-	}*/
-
-	logrus.Info("application shut down")
-
+	log.Println("database closing")
 	if err := db.Close(); err != nil {
-		logrus.Errorf("error occured on database connection close: %s", err.Error())
+		panic(err)
 	}
-}
-
-func (s *Server) Run(handler http.Handler) error {
-	s.httpServer = &http.Server{
-		Addr:           ":" + "3000",
-		Handler:        handler,
-		MaxHeaderBytes: 1 << 20, // 1 MB
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-	}
-
-	return s.httpServer.ListenAndServe()
-}
-
-func (s *Server) Shutdown(ctx context.Context) error {
-	return s.httpServer.Shutdown(ctx)
+	log.Println("database closed")
 }

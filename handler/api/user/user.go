@@ -2,16 +2,28 @@ package user
 
 //noinspection
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/handler/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"github.com/serhatmorkoc/go-realworld-example/service/auth"
+	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"time"
 )
+
+//Request
+
+type LoginUserRequest struct {
+	User struct{
+		Email string `json:"email" validate:"required"`
+		Password string `json:"password"`
+	}
+}
 
 type CreateUserRequest struct {
 	User struct {
@@ -35,6 +47,12 @@ type ProfileRequest struct {
 	Username string `json:"username"`
 }
 
+//Response
+
+type LoginUserResponse struct {
+	User UserResponse
+}
+
 type CreateUserResponse struct {
 	User struct {
 		Username string `json:"username"`
@@ -42,16 +60,6 @@ type CreateUserResponse struct {
 		Image    string `json:"image"`
 		Bio      string `json:"bio"`
 		Token    string `json:"token"`
-	} `json:"user"`
-}
-
-type UserResponse struct {
-	User struct {
-		Email    string `json:"email"`
-		Token    string `json:"token"`
-		Username string `json:"username"`
-		Bio      string `json:"bio"`
-		Image    string `json:"image"`
 	} `json:"user"`
 }
 
@@ -64,7 +72,17 @@ type ProfileResponse struct {
 	} `json:"profile"`
 }
 
-func HandlerCreate(us model.UserStore) http.HandlerFunc {
+type UserResponse struct {
+	User struct {
+		Email    string `json:"email"`
+		Token    string `json:"token"`
+		Username string `json:"username"`
+		Bio      string `json:"bio"`
+		Image    string `json:"image"`
+	} `json:"user"`
+}
+
+func HandleCreate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var req CreateUserRequest
@@ -88,7 +106,7 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 			UpdatedAt: time.Now(),
 		}
 
-		result, err := us.Create(&user)
+		result, err := us.Create(ctx, &user)
 		if err != nil {
 			render.BadRequest(w, err)
 			return
@@ -116,7 +134,7 @@ func HandlerCreate(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandlerCurrentUser(us model.UserStore) http.HandlerFunc {
+func HandleCurrentUser(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		props, _ := r.Context().Value("userAuthCtx").(jwt.MapClaims)
@@ -126,7 +144,7 @@ func HandlerCurrentUser(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandlerUpdate(us model.UserStore) http.HandlerFunc {
+func HandleUpdate(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var req UpdateUserRequest
@@ -172,8 +190,54 @@ func HandlerUpdate(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandlerProfile(us model.UserStore) http.HandlerFunc {
+func HandleProfile(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+	}
+}
+
+func HandleFind(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req LoginUserRequest
+
+		body ,err := io.ReadAll(r.Body)
+		if err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		defer r.Body.Close()
+
+		if err := json.Unmarshal(body, &req); err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		if err := req.ValidateLoginUserRequest(); err != nil {
+			render.BadRequest(w,err)
+			return
+		}
+
+		user, err := us.GetByEmail(req.User.Email)
+		if err != nil {
+			render.NotFound(w, err)
+			logrus.Info("api: cannot find user")
+			return
+		}
+
+		token, err := auth.GenerateToken(user.UserId, user.UserName)
+		if err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		var res UserResponse
+		res.User.Email = user.Email
+		res.User.Username = user.UserName
+		res.User.Image = user.Image
+		res.User.Bio = user.Bio
+		res.User.Token = token
+
+		render.JSON(w, res, http.StatusOK)
 	}
 }
 
@@ -222,3 +286,15 @@ func HandlerListRange(us model.UserStore) http.HandlerFunc {
 		render.MultipleSuccessJSON(w, users)
 	}
 }*/
+
+func (u LoginUserRequest) ValidateLoginUserRequest() error {
+	if len(u.User.Email) == 0 {
+		return errors.New("Email required")
+	}
+
+	if len(u.User.Password) == 0 {
+		return errors.New("Password required")
+	}
+
+	return nil
+}

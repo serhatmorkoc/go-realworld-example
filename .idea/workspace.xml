@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b838081e-4749-4647-b67f-94afe11db250" name="Changes" comment="" />
+    <list default="true" id="b838081e-4749-4647-b67f-94afe11db250" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,7 +19,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../../Program Files/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -25,7 +27,7 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1ygm3LTR1qGEGlTJbaJYXmSfYff" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -44,16 +46,16 @@
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="go.sdk" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/GitHub/go-metrogeorgia" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/store/shared" />
+      <recent name="C:\Users\T3\go\src\github.com\serhatmorkoc\go-realworld-example\store\article" />
+      <recent name="C:\Users\T3\go\src\github.com\serhatmorkoc\go-realworld-example\store\comment" />
+      <recent name="C:\Users\T3\go\src\github.com\serhatmorkoc\go-realworld-example\store\user" />
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\service\auth" />
       <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\docs" />
-      <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\schema" />
-      <recent name="C:\Users\serhatmorkoc\go\src\github.com\serhatmorkoc\go-realworld-example\db\migrate\postgres" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -64,45 +66,66 @@
     </option>
   </component>
   <component name="RunManager" selected="Go Build.go build github.com/serhatmorkoc/go-realworld-example">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="go-realworld-example" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="PACKAGE" />
+      <package value="github.com/serhatmorkoc/go-realworld-example" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build github.com/serhatmorkoc/go-realworld-example" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/main.go" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
-      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <pattern value="^\QTestComment\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
-      <framework value="gotest" />
       <kind value="PACKAGE" />
       <package value="github.com/serhatmorkoc/go-realworld-example/store" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <pattern value="^\QTestComment\E$/^\QCreate\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="go-realworld-example" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="DIRECTORY" />
+      <package value="github.com/serhatmorkoc/go-realworld-example" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="comment_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="go-realworld-example" />
       <working_directory value="$PROJECT_DIR$/store" />
-      <framework value="gotest" />
       <kind value="FILE" />
       <package value="github.com/serhatmorkoc/go-realworld-example" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/store/comment_test.go" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="generated-requests#1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" runType="Run single request">
@@ -122,6 +145,9 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.env" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -133,11 +159,6 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <ignored-roots>
-      <path value="$PROJECT_DIR$" />
-    </ignored-roots>
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -161,19 +182,9 @@
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/store/user.go</url>
+          <url>file://$PROJECT_DIR$/store/user/user.go</url>
           <line>112</line>
           <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/handler/api/user/user.go</url>
-          <line>131</line>
-          <option name="timeStamp" value="79" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/handler/api/user/user.go</url>
-          <line>176</line>
-          <option name="timeStamp" value="82" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

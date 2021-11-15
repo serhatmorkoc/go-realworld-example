@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq"
 	"sync"
 	"time"
 )
@@ -50,13 +51,13 @@ func parseDSN(driver, host, database, username, password string, port int) (stri
 
 	switch driver {
 	case "postgres":
-		return postgreParseDSN(host,database,username,password,port), nil
+		return postgreParseDSN(host, database, username, password, port), nil
 	default:
 		return "", errUnSupportedDriver
 	}
 }
 
-func postgreParseDSN(host,database,username,password string, port int) string {
+func postgreParseDSN(host, database, username, password string, port int) string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, username, password, database)
 }

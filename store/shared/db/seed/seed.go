@@ -1,12 +1,15 @@
 package seed
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"os"
 )
 
 func Seed(us model.UserStore) error {
+
+	ctx := context.Context(context.Background())
 
 	file, err := os.ReadFile("store/shared/db/seed/users.json")
 	if err != nil {
@@ -19,7 +22,7 @@ func Seed(us model.UserStore) error {
 	}
 
 	for _, item := range users {
-		_, err := us.Create(&item)
+		_, err := us.Create(ctx, &item)
 		if err != nil {
 			return err
 		}
