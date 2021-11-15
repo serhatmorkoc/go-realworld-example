@@ -200,9 +200,9 @@
           <option name="timeStamp" value="93" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/middleware/jwt_auth.go</url>
-          <line>15</line>
-          <option name="timeStamp" value="95" />
+          <url>file://$PROJECT_DIR$/service/auth/auth.go</url>
+          <line>51</line>
+          <option name="timeStamp" value="97" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

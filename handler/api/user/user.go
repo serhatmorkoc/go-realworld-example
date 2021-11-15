@@ -1,7 +1,6 @@
 package user
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/handler/render"
@@ -79,7 +78,7 @@ type BaseUserResponse struct {
 	} `json:"user"`
 }
 
-func HandleCreate(ctx context.Context, us model.UserStore) http.HandlerFunc {
+func HandleCreate(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var req CreateUserRequest
@@ -103,7 +102,7 @@ func HandleCreate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 			UpdatedAt: time.Now(),
 		}
 
-		result, err := us.Create(ctx, &user)
+		result, err := us.Create(r.Context(), &user)
 		if err != nil {
 			render.BadRequest(w, err)
 			return
@@ -131,7 +130,7 @@ func HandleCreate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandleCurrentUser(ctx context.Context, us model.UserStore) http.HandlerFunc {
+func HandleCurrentUser( us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		userId, err := auth.GetUserId(r.Context())
@@ -150,7 +149,7 @@ func HandleCurrentUser(ctx context.Context, us model.UserStore) http.HandlerFunc
 	}
 }
 
-func HandleUpdate(ctx context.Context, us model.UserStore) http.HandlerFunc {
+func HandleUpdate(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		userId, err := auth.GetUserId(r.Context())
@@ -180,7 +179,11 @@ func HandleUpdate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 		}
 
 		if len(req.User.Username) != 0 {
-			user.Password = req.User.Username
+			user.UserName = req.User.Username
+		}
+
+		if len(req.User.Password) != 0 {
+			user.Password = req.User.Password
 		}
 
 		if len(req.User.Bio) != 0 {
@@ -191,7 +194,7 @@ func HandleUpdate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 			user.Image = req.User.Image
 		}
 
-		if err := us.Update(ctx, &user); err != nil {
+		if err := us.Update(r.Context(), &user); err != nil {
 			render.BadRequest(w, err)
 			return
 		}

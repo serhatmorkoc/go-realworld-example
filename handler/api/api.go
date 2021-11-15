@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
@@ -26,9 +25,6 @@ func New(users model.UserStore, comments model.CommentStore, articles model.Arti
 
 func (s Server) Handler() http.Handler {
 	r := chi.NewRouter()
-
-	//TODO
-	ctx := context.Context(context.Background())
 
 	/*"github.com/goware/cors"
 	cors := cors.New(cors.Options{
@@ -60,15 +56,15 @@ func (s Server) Handler() http.Handler {
 			r.Handle("/docs1", sh1)*/
 
 	r.Route("/api/users", func(r chi.Router) {
-		r.Post("/", user.HandleCreate(ctx, s.Users))
+		r.Post("/", user.HandleCreate(s.Users))
 		r.Post("/login", user.HandleFind(s.Users))
 	})
 
 	r.Route("/api/user", func(r chi.Router) {
 
 		r.Use(middleware1.ValidateJWT)
-		r.Put("/", user.HandleUpdate(ctx, s.Users))
-		r.Get("/", user.HandleCurrentUser(ctx, s.Users))
+		r.Put("/", user.HandleUpdate(s.Users))
+		r.Get("/", user.HandleCurrentUser(s.Users))
 	})
 
 	r.Route("/api/profiles", func(r chi.Router) {
