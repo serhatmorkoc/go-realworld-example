@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"github.com/serhatmorkoc/go-realworld-example/store/shared/db/migrate/postgres"
 	"sync"
 	"time"
 )
@@ -16,6 +17,7 @@ func Connection(driver, host, database, username, password string, port, maxOpen
 
 	db, err := sql.Open(driver, dsn)
 	if err != nil {
+		//debug.PrintStack()
 		return nil, err
 	}
 
@@ -28,6 +30,10 @@ func Connection(driver, host, database, username, password string, port, maxOpen
 	db.SetConnMaxIdleTime(1 * time.Second)
 	db.SetConnMaxLifetime(30 * time.Second)
 
+	if err := setupDatabase(db, driver); err != nil {
+		return nil, err
+	}
+
 	return &DB{
 		conn: db,
 		lock: new(sync.Mutex),
@@ -35,7 +41,7 @@ func Connection(driver, host, database, username, password string, port, maxOpen
 }
 
 func pingDatabase(db *sql.DB) error {
-	r := 5
+	r := 3
 	for i := 0; i < r; i++ {
 		err := db.Ping()
 		if err == nil {
@@ -44,7 +50,21 @@ func pingDatabase(db *sql.DB) error {
 		time.Sleep(1 * time.Second)
 	}
 
+	//debug.PrintStack()
 	return errPingDatabase
+}
+
+func setupDatabase(db *sql.DB, driver string) error {
+
+	return postgres.Migrate(db)
+
+	switch driver {
+	case "postgres":
+		return postgres.Migrate(db)
+	default:
+		return errUnSupportedDriver
+	}
+
 }
 
 func parseDSN(driver, host, database, username, password string, port int) (string, error) {

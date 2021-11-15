@@ -1,10 +1,13 @@
 package auth
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -23,7 +26,7 @@ func GenerateToken(id uint, userName string) (string, error) {
 		UID:    uuid.New().String(),
 		StandardClaims: jwt.StandardClaims{
 			Audience:  "",
-			ExpiresAt: now.Add(time.Second * 60).Unix(),
+			ExpiresAt: now.Add(time.Minute * 60).Unix(),
 			Id:        "",
 			IssuedAt:  0,
 			Issuer:    "",
@@ -40,6 +43,18 @@ func GenerateToken(id uint, userName string) (string, error) {
 	}
 
 	return t, nil
+}
+
+func GetUserId(ctx context.Context)(uint, error) {
+
+	props, _ := ctx.Value("userAuthCtx").(jwt.MapClaims)
+
+	userId, err := strconv.ParseInt(fmt.Sprintf("%v", props["user_id"]), 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(userId), nil
 }
 
 func ParseToken(accessToken string) (uint, error) {

@@ -25,8 +25,7 @@ func main() {
 		panic(err)
 	}
 
-	logo := os.Getenv("CONSOLE_L")
-	fmt.Println(logo)
+	fmt.Println(os.Getenv("CONSOLE_L"))
 	driver := os.Getenv("DB_DRIVER")
 	host := os.Getenv("DB_HOST")
 	database := os.Getenv("DB_DATABASE")

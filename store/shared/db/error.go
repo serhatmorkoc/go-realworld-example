@@ -3,6 +3,6 @@ package db
 import "github.com/pkg/errors"
 
 var (
-	errUnSupportedDriver = errors.New("")
-	errPingDatabase = errors.New("")
+	errUnSupportedDriver = errors.New("errUnSupportedDriver")
+	errPingDatabase = errors.New("errPingDatabase")
 )

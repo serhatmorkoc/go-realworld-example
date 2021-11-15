@@ -1,11 +1,8 @@
 package user
 
-//noinspection
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/handler/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
@@ -19,8 +16,8 @@ import (
 //Request
 
 type LoginUserRequest struct {
-	User struct{
-		Email string `json:"email" validate:"required"`
+	User struct {
+		Email    string `json:"email" validate:"required"`
 		Password string `json:"password"`
 	}
 }
@@ -50,7 +47,7 @@ type ProfileRequest struct {
 //Response
 
 type LoginUserResponse struct {
-	User UserResponse
+	User BaseUserResponse
 }
 
 type CreateUserResponse struct {
@@ -72,7 +69,7 @@ type ProfileResponse struct {
 	} `json:"profile"`
 }
 
-type UserResponse struct {
+type BaseUserResponse struct {
 	User struct {
 		Email    string `json:"email"`
 		Token    string `json:"token"`
@@ -134,18 +131,33 @@ func HandleCreate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandleCurrentUser(us model.UserStore) http.HandlerFunc {
+func HandleCurrentUser(ctx context.Context, us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		props, _ := r.Context().Value("userAuthCtx").(jwt.MapClaims)
+		userId, err := auth.GetUserId(r.Context())
+		if err != nil {
+			render.Unauthorized(w, err)
+			return
+		}
 
-		str := fmt.Sprintf("user id:%v - user name:%v", props["user_id"], props["user_name"])
-		w.Write([]byte(str))
+		user, err := us.GetById(userId)
+		if err != nil {
+			render.NotFound(w, err)
+			return
+		}
+
+		render.JSON(w, user, http.StatusOK)
 	}
 }
 
-func HandleUpdate(us model.UserStore) http.HandlerFunc {
+func HandleUpdate(ctx context.Context, us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		userId, err := auth.GetUserId(r.Context())
+		if err != nil {
+			render.Unauthorized(w, err)
+			return
+		}
 
 		var req UpdateUserRequest
 		body, err := io.ReadAll(r.Body)
@@ -160,33 +172,39 @@ func HandleUpdate(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		user := model.User{
-			Email:     req.User.Email,
-			UserName:  req.User.Username,
-			Password:  req.User.Password,
-			Bio:       req.User.Bio,
-			Image:     req.User.Image,
-			UpdatedAt: time.Now(),
+		var user model.User
+		user.UserId = userId
+
+		if len(req.User.Email) != 0 {
+			user.Email = req.User.Email
 		}
 
-		affected, err := us.Update(&user)
-		if err != nil {
+		if len(req.User.Username) != 0 {
+			user.Password = req.User.Username
+		}
+
+		if len(req.User.Bio) != 0 {
+			user.Bio = req.User.Bio
+		}
+
+		if len(req.User.Image) != 0 {
+			user.Image = req.User.Image
+		}
+
+		if err := us.Update(ctx, &user); err != nil {
 			render.BadRequest(w, err)
 			return
 		}
 
-		if affected == 0 {
-			render.BadRequest(w, model.ErrOperationFailed)
+		result, err := us.GetById(userId)
+		if err != nil {
+			render.NotFound(w, err)
 			return
 		}
 
-		var res UserResponse
-		res.User.Email = user.Email
-		res.User.Username = user.UserName
-		res.User.Image = user.Image
-		res.User.Bio = user.Bio
+		//TODO: token set edilecek.
 
-		render.JSON(w, res, http.StatusOK)
+		render.JSON(w, result, http.StatusOK)
 	}
 }
 
@@ -199,7 +217,7 @@ func HandleFind(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req LoginUserRequest
 
-		body ,err := io.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			render.BadRequest(w, err)
 			return
@@ -213,7 +231,7 @@ func HandleFind(us model.UserStore) http.HandlerFunc {
 		}
 
 		if err := req.ValidateLoginUserRequest(); err != nil {
-			render.BadRequest(w,err)
+			render.BadRequest(w, err)
 			return
 		}
 
@@ -230,7 +248,7 @@ func HandleFind(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var res UserResponse
+		var res BaseUserResponse
 		res.User.Email = user.Email
 		res.User.Username = user.UserName
 		res.User.Image = user.Image
@@ -240,52 +258,6 @@ func HandleFind(us model.UserStore) http.HandlerFunc {
 		render.JSON(w, res, http.StatusOK)
 	}
 }
-
-/*func HandlerFind(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		val := chi.URLParam(r, "id")
-
-		v, _ := strconv.ParseInt(val, 10, 64)
-		user, err := us.GetById(v)
-		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
-			return
-		}
-
-		render.SingleSuccessJSON(w, user)
-	}
-}
-
-func HandlerList(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		users, err := us.GetAll()
-		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
-			return
-		}
-
-		render.MultipleSuccessJSON(w, users)
-	}
-}
-
-func HandlerListRange(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		users, err := us.GetAllRange(
-			model.UserParams{
-				Page: 10,
-				Size: 5,
-			})
-		if err != nil {
-			render.ErrorJSON(w, err, http.StatusBadRequest)
-			return
-		}
-
-		render.MultipleSuccessJSON(w, users)
-	}
-}*/
 
 func (u LoginUserRequest) ValidateLoginUserRequest() error {
 	if len(u.User.Email) == 0 {

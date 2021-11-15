@@ -11,11 +11,11 @@ const MinPasswordLength = 6
 const PasswordKeyLength = 64
 
 type UserStore interface {
-	GetById(id int64) (*User, error)
+	GetById(id uint) (*User, error)
 	GetByEmail(string) (*User, error)
 	GetByUsername(string) (*User, error)
 	Create(context.Context, *User) (*User, error)
-	Update(*User) (int64, error)
+	Update(context.Context, *User) error
 	Delete(*User) error
 
 	GetAll() ([]*User, error)

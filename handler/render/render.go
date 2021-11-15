@@ -34,7 +34,7 @@ func BadRequest(w http.ResponseWriter, err error) {
 func JSON(w http.ResponseWriter, v interface{}, status int) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(status)
 
 	buf := &bytes.Buffer{}
 	enc := json.NewEncoder(buf)

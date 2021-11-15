@@ -67,8 +67,8 @@ func (s Server) Handler() http.Handler {
 	r.Route("/api/user", func(r chi.Router) {
 
 		r.Use(middleware1.ValidateJWT)
-		r.Put("/", user.HandleUpdate(s.Users))
-		r.Get("/", user.HandleCurrentUser(s.Users))
+		r.Put("/", user.HandleUpdate(ctx, s.Users))
+		r.Get("/", user.HandleCurrentUser(ctx, s.Users))
 	})
 
 	r.Route("/api/profiles", func(r chi.Router) {
