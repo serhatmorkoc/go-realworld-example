@@ -194,16 +194,6 @@
           <line>108</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/service/auth/auth.go</url>
-          <line>49</line>
-          <option name="timeStamp" value="93" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/service/auth/auth.go</url>
-          <line>51</line>
-          <option name="timeStamp" value="97" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

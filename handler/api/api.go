@@ -57,7 +57,7 @@ func (s Server) Handler() http.Handler {
 
 	r.Route("/api/users", func(r chi.Router) {
 		r.Post("/", user.HandleCreate(s.Users))
-		r.Post("/login", user.HandleFind(s.Users))
+		r.Post("/login", user.HandleLogin(s.Users))
 	})
 
 	r.Route("/api/user", func(r chi.Router) {

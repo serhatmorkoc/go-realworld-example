@@ -47,6 +47,7 @@ func GenerateToken(id uint, userName string) (string, error) {
 
 func GetUserId(ctx context.Context)(uint, error) {
 
+	//TODO:
 	props, _ := ctx.Value("userAuthCtx").(jwt.MapClaims)
 
 	userId, err := strconv.ParseInt(fmt.Sprintf("%v", props["user_id"]), 10, 64)
@@ -57,7 +58,9 @@ func GetUserId(ctx context.Context)(uint, error) {
 	return uint(userId), nil
 }
 
-func ParseToken(accessToken string) (uint, error) {
+
+func parseToken(accessToken string) (uint, error) {
+	//TODO:
 	token, err := jwt.ParseWithClaims(accessToken, &jwtCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")

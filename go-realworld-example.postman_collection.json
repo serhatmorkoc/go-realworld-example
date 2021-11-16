@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "05f540ed-2364-490e-be93-238505fe992e",
+		"_postman_id": "be03b137-8f73-4435-8f76-140737478813",
 		"name": "go-realworld-example",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,12 +10,28 @@
 			"item": [
 				{
 					"name": "Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"let token = jsonData.user.token;",
+									"",
+									"console.log(token)",
+									"",
+									"pm.environment.set('access-token', token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"user\":{\r\n    \"email\": \"jake@jake.jake\",\r\n    \"password\": \"jakejake\"\r\n  }\r\n}",
+							"raw": "{\r\n  \"user\":{\r\n    \"email\": \"sbaxandall0@squarespace.com\",\r\n    \"password\": \"123456\"\r\n  }\r\n}\r\n\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -69,7 +85,28 @@
 				},
 				{
 					"name": "Get Current User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access-token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -82,6 +119,82 @@
 							"path": [
 								"api",
 								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\":{\r\n    \"email\": \"kvlasenkov6@seesaa.net\",\r\n    \"bio\": \"atr\",\r\n    \"image\": \"https://i.stack.imgur.com/xHWG8.jpg\",\r\n    \"password\" : \"123d456\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/profiles/:username",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"profiles",
+								":username"
+							],
+							"variable": [
+								{
+									"key": "username",
+									"value": "kborrie0"
+								}
 							]
 						}
 					},

@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/handler/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
@@ -130,22 +131,49 @@ func HandleCreate(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandleCurrentUser( us model.UserStore) http.HandlerFunc {
+func HandleLogin(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var req LoginUserRequest
 
-		userId, err := auth.GetUserId(r.Context())
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			render.Unauthorized(w, err)
+			render.BadRequest(w, err)
 			return
 		}
 
-		user, err := us.GetById(userId)
+		defer r.Body.Close()
+
+		if err := json.Unmarshal(body, &req); err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		if err := req.validateLoginUserRequest(); err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		user, err := us.GetByEmail(req.User.Email)
 		if err != nil {
 			render.NotFound(w, err)
+			logrus.Info("api: cannot find user")
 			return
 		}
 
-		render.JSON(w, user, http.StatusOK)
+		token, err := auth.GenerateToken(user.UserId, user.UserName)
+		if err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		var res BaseUserResponse
+		res.User.Email = user.Email
+		res.User.Username = user.UserName
+		res.User.Image = user.Image
+		res.User.Bio = user.Bio
+		res.User.Token = token
+
+		render.JSON(w, res, http.StatusOK)
 	}
 }
 
@@ -211,58 +239,51 @@ func HandleUpdate(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandleProfile(us model.UserStore) http.HandlerFunc {
+func HandleCurrentUser(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-	}
-}
 
-func HandleFind(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var req LoginUserRequest
-
-		body, err := io.ReadAll(r.Body)
+		userId, err := auth.GetUserId(r.Context())
 		if err != nil {
-			render.BadRequest(w, err)
+			render.Unauthorized(w, err)
 			return
 		}
 
-		defer r.Body.Close()
-
-		if err := json.Unmarshal(body, &req); err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-
-		if err := req.ValidateLoginUserRequest(); err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-
-		user, err := us.GetByEmail(req.User.Email)
+		user, err := us.GetById(userId)
 		if err != nil {
 			render.NotFound(w, err)
-			logrus.Info("api: cannot find user")
 			return
 		}
 
-		token, err := auth.GenerateToken(user.UserId, user.UserName)
-		if err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-
-		var res BaseUserResponse
-		res.User.Email = user.Email
-		res.User.Username = user.UserName
-		res.User.Image = user.Image
-		res.User.Bio = user.Bio
-		res.User.Token = token
-
-		render.JSON(w, res, http.StatusOK)
+		render.JSON(w, user, http.StatusOK)
 	}
 }
 
-func (u LoginUserRequest) ValidateLoginUserRequest() error {
+func HandleProfile(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		userName := chi.URLParam(r, "username")
+		if len(userName) == 0 {
+			render.BadRequest(w, errors.New(""))
+			return
+		}
+
+		user, err := us.GetByUsername(userName)
+		if err != nil {
+			render.NotFound(w, err)
+			return
+		}
+
+		var profile ProfileResponse
+		profile.Profile.Bio = user.Bio
+		profile.Profile.Username = user.UserName
+		profile.Profile.Image = user.Image
+
+		render.JSON(w, profile, http.StatusOK)
+
+	}
+}
+
+func (u LoginUserRequest) validateLoginUserRequest() error {
 	if len(u.User.Email) == 0 {
 		return errors.New("Email required")
 	}

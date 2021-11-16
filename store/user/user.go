@@ -47,9 +47,9 @@ func (us *userStore) GetByEmail(email string) (*model.User, error) {
 		query := "SELECT * FROM users where email = $1 LIMIT 1"
 		err := execer.QueryRow(query, email).Scan(
 			&user.UserId,
+			&user.UserName,
 			&user.Email,
 			&user.Password,
-			&user.UserName,
 			&user.Bio,
 			&user.Image,
 			&user.CreatedAt,
@@ -68,9 +68,9 @@ func (us *userStore) GetByUsername(username string) (*model.User, error) {
 		query := "SELECT * FROM users where username = $1 LIMIT 1"
 		err := execer.QueryRow(query, username).Scan(
 			&user.UserId,
+			&user.UserName,
 			&user.Email,
 			&user.Password,
-			&user.UserName,
 			&user.Bio,
 			&user.Image,
 			&user.CreatedAt,
