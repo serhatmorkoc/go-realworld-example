@@ -79,7 +79,53 @@ type BaseUserResponse struct {
 	} `json:"user"`
 }
 
-func HandleCreate(us model.UserStore) http.HandlerFunc {
+func HandleAuthentication(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req LoginUserRequest
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		defer r.Body.Close()
+
+		if err := json.Unmarshal(body, &req); err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		if err := req.validateLoginUserRequest(); err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		user, err := us.GetByEmail(req.User.Email)
+		if err != nil {
+			render.NotFound(w, err)
+			logrus.Info("api: cannot find user")
+			return
+		}
+
+		token, err := auth.GenerateToken(user.UserId, user.UserName)
+		if err != nil {
+			render.BadRequest(w, err)
+			return
+		}
+
+		var res BaseUserResponse
+		res.User.Email = user.Email
+		res.User.Username = user.UserName
+		res.User.Image = user.Image
+		res.User.Bio = user.Bio
+		res.User.Token = token
+
+		render.JSON(w, res, http.StatusOK)
+	}
+}
+
+func HandleRegistration(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var req CreateUserRequest
@@ -131,49 +177,22 @@ func HandleCreate(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandleLogin(us model.UserStore) http.HandlerFunc {
+func HandleCurrentUser(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req LoginUserRequest
 
-		body, err := io.ReadAll(r.Body)
+		userId, err := auth.GetUserId(r.Context())
 		if err != nil {
-			render.BadRequest(w, err)
+			render.Unauthorized(w, err)
 			return
 		}
 
-		defer r.Body.Close()
-
-		if err := json.Unmarshal(body, &req); err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-
-		if err := req.validateLoginUserRequest(); err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-
-		user, err := us.GetByEmail(req.User.Email)
+		user, err := us.GetById(userId)
 		if err != nil {
 			render.NotFound(w, err)
-			logrus.Info("api: cannot find user")
 			return
 		}
 
-		token, err := auth.GenerateToken(user.UserId, user.UserName)
-		if err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-
-		var res BaseUserResponse
-		res.User.Email = user.Email
-		res.User.Username = user.UserName
-		res.User.Image = user.Image
-		res.User.Bio = user.Bio
-		res.User.Token = token
-
-		render.JSON(w, res, http.StatusOK)
+		render.JSON(w, user, http.StatusOK)
 	}
 }
 
@@ -239,25 +258,6 @@ func HandleUpdate(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func HandleCurrentUser(us model.UserStore) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		userId, err := auth.GetUserId(r.Context())
-		if err != nil {
-			render.Unauthorized(w, err)
-			return
-		}
-
-		user, err := us.GetById(userId)
-		if err != nil {
-			render.NotFound(w, err)
-			return
-		}
-
-		render.JSON(w, user, http.StatusOK)
-	}
-}
-
 func HandleProfile(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -280,6 +280,49 @@ func HandleProfile(us model.UserStore) http.HandlerFunc {
 
 		render.JSON(w, profile, http.StatusOK)
 
+	}
+}
+
+func HandleFollowUser(us model.UserStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var userName = chi.URLParam(r,"username")
+
+		followerID, err := auth.GetUserId(r.Context())
+		if err != nil {
+			render.Unauthorized(w, err)
+			return
+		}
+
+		followerUser, err := us.GetById(followerID)
+		if err != nil {
+			render.BadRequest(w,err)
+			return
+		}
+
+		user, err := us.GetByUsername(userName)
+		if err != nil {
+			render.NotFound(w,err)
+			return
+		}
+
+		if followerUser.UserName == user.UserName {
+			render.BadRequest(w,errors.New("cannot follow yourself"))
+			return
+		}
+
+		if err = us.AddFollower(user,followerID); err != nil {
+			render.NotFound(w,err)
+			return
+		}
+
+		var profile ProfileResponse
+		profile.Profile.Bio = user.Bio
+		profile.Profile.Username = user.UserName
+		profile.Profile.Image = user.Image
+		profile.Profile.Following = true
+
+		render.JSON(w, profile, http.StatusOK)
 	}
 }
 

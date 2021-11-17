@@ -56,20 +56,21 @@ func (s Server) Handler() http.Handler {
 			r.Handle("/docs1", sh1)*/
 
 	r.Route("/api/users", func(r chi.Router) {
-		r.Post("/", user.HandleCreate(s.Users))
-		r.Post("/login", user.HandleLogin(s.Users))
+		r.Post("/login", user.HandleAuthentication(s.Users))
+		r.Post("/", user.HandleRegistration(s.Users))
 	})
 
 	r.Route("/api/user", func(r chi.Router) {
-
 		r.Use(middleware1.ValidateJWT)
-		r.Put("/", user.HandleUpdate(s.Users))
 		r.Get("/", user.HandleCurrentUser(s.Users))
+		r.Put("/", user.HandleUpdate(s.Users))
 	})
 
 	r.Route("/api/profiles", func(r chi.Router) {
 		r.Get("/{username}", user.HandleProfile(s.Users))
+		r.With(middleware1.ValidateJWT).Post("/{username}/follow", user.HandleFollowUser(s.Users))
 	})
+
 
 	return r
 }

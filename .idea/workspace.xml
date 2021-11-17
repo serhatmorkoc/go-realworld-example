@@ -34,6 +34,9 @@
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="false" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/drone/go-login@v1.0.4-0.20190311170324-2a4df4f242a2/login/login.go" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProjectId" id="1ygm3LTR1qGEGlTJbaJYXmSfYff" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -142,10 +145,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build github.com/serhatmorkoc/go-realworld-example" />
-        <item itemvalue="Go Test.TestComment in github.com/serhatmorkoc/go-realworld-example/store" />
+        <item itemvalue="HTTP Request.generated-requests#1" />
         <item itemvalue="Go Test.comment_test.go" />
         <item itemvalue="Go Test.TestComment/Create in github.com/serhatmorkoc/go-realworld-example/store" />
-        <item itemvalue="HTTP Request.generated-requests#1" />
+        <item itemvalue="Go Test.TestComment in github.com/serhatmorkoc/go-realworld-example/store" />
       </list>
     </recent_temporary>
   </component>
