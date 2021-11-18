@@ -218,8 +218,11 @@ func HandleUpdate(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var user model.User
-		user.UserId = userId
+		user, err := us.GetById(userId)
+		if err != nil {
+			render.BadRequest(w,err)
+			return
+		}
 
 		if len(req.User.Email) != 0 {
 			user.Email = req.User.Email
@@ -241,7 +244,7 @@ func HandleUpdate(us model.UserStore) http.HandlerFunc {
 			user.Image = req.User.Image
 		}
 
-		if err := us.Update(r.Context(), &user); err != nil {
+		if err := us.Update(r.Context(), user); err != nil {
 			render.BadRequest(w, err)
 			return
 		}
