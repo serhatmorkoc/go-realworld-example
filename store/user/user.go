@@ -196,6 +196,7 @@ func (us *userStore) GetAllRange(params model.UserParams) ([]*model.User, error)
 }
 
 func (us *userStore) AddFollower(user *model.User, followerID uint) error {
+
 	panic("implement me")
 }
 
