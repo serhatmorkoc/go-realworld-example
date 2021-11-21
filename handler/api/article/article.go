@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/serhatmorkoc/go-realworld-example/handler/render"
 	"github.com/serhatmorkoc/go-realworld-example/model"
+	"github.com/serhatmorkoc/go-realworld-example/service/auth"
 	"io"
 	"net/http"
 	"strconv"
@@ -36,8 +37,7 @@ var multipleArticleResponse []singleArticleResponse
 func HandleArticleList(as model.ArticleStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		slug :=r.URL.Query().Get("slug")
-
+		slug := r.URL.Query().Get("slug")
 
 		favorited := chi.URLParam(r, "favortied")
 		limit, err := strconv.Atoi(chi.URLParam(r, "limit"))
@@ -60,7 +60,7 @@ func HandleArticleList(as model.ArticleStore) http.HandlerFunc {
 			return
 		}
 
-		render.JSON(w,articles, http.StatusOK)
+		render.JSON(w, articles, http.StatusOK)
 		return
 
 	}
@@ -69,29 +69,40 @@ func HandleArticleList(as model.ArticleStore) http.HandlerFunc {
 func HandlerCreate(as model.ArticleStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		userId, err := auth.GetUserId(r.Context())
+		if err != nil {
+			render.Unauthorized(w, err)
+			return
+		}
+
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			//
+			render.BadRequest(w, err)
+			return
 		}
 		r.Body.Close()
 
-		var article model.Article
-		if err := json.Unmarshal(body, &article); err != nil {
+		var request createArticleRequest
+		if err := json.Unmarshal(body, &request); err != nil {
 			render.BadRequest(w, err)
 			return
 		}
 
-		affected, err := as.Create(&article)
-		if err != nil {
-			render.BadRequest(w, err)
-			return
-		}
-		if affected == 0 {
-			//render.ErrorJSON(w, model.ErrOperationFailed, http.StatusBadRequest)
+		a := request.createRequestToModel()
+		a.UserId = int64(userId)
+		if err := as.Create(a); err != nil {
 			render.BadRequest(w, err)
 			return
 		}
 
-		render.JSON(w, article, http.StatusCreated)
+		render.JSON(w, a, http.StatusCreated)
 	}
+}
+
+func (req createArticleRequest) createRequestToModel() *model.Article {
+
+	return &model.Article{
+		Title: req.Article.Title,
+	}
+
 }

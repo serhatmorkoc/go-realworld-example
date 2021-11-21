@@ -43,13 +43,10 @@ func (as *articleStore) GetAll(tag, author, favorited string, limit, offset int)
 		for rows.Next() {
 			 err = rows.Scan(&article.ArticleId,
 				 &article.UserId,
-				 &article.Slug,
 				 &article.Title,
 				 &article.Description,
 				 &article.Body,
 				 pq.Array(&article.TagList),
-				 &article.Favorited,
-				 &article.FavoritesCount,
 				 &article.CreatedAt,
 				 &article.UpdatedAt)
 			 if err != nil {
@@ -72,7 +69,7 @@ func (as *articleStore) GetById(u uint64) (*model.Article, error) {
 	panic("implement me")
 }
 
-func (as *articleStore) Create(article *model.Article) (int64, error) {
+func (as *articleStore) Create(article *model.Article) error {
 	panic("implement me")
 }
 

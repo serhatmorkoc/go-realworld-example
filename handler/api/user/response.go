@@ -1,7 +1,7 @@
 package user
 
 type loginUserResponse struct {
-	User baseUserResponse
+	User userResponse
 }
 
 type createUserResponse struct {
@@ -23,7 +23,7 @@ type profileResponse struct {
 	} `json:"profile"`
 }
 
-type baseUserResponse struct {
+type userResponse struct {
 	User struct {
 		Email    string `json:"email"`
 		Token    string `json:"token"`

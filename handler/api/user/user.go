@@ -48,7 +48,7 @@ func HandleAuthentication(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var res baseUserResponse
+		var res userResponse
 		res.User.Email = user.Email
 		res.User.Username = user.UserName
 		res.User.Image = user.Image
