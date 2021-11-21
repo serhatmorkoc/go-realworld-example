@@ -3,16 +3,16 @@ package model
 import "time"
 
 type ArticleStore interface {
-	GetAll(uint64) ([]*Article, error)
+	GetAll(tag, author, favorited string, limit, offset int) ([]*Article, error)
 	GetById(uint64) (*Article, error)
 	Create(*Article) (int64, error)
 	Update(*Article) (int64, error)
 	Delete(uint64) (int64, error)
-
 }
 
 type Article struct {
 	ArticleId      int64
+	UserId         int64
 	Slug           string
 	Title          string
 	Description    string

@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/serhatmorkoc/go-realworld-example/handler/api/article"
 	"github.com/serhatmorkoc/go-realworld-example/handler/api/user"
 	middleware1 "github.com/serhatmorkoc/go-realworld-example/middleware"
 	"github.com/serhatmorkoc/go-realworld-example/model"
@@ -71,6 +72,9 @@ func (s Server) Handler() http.Handler {
 		r.With(middleware1.ValidateJWT).Post("/{username}/follow", user.HandleFollowUser(s.Users))
 	})
 
+	r.Route("/api/articles", func(r chi.Router) {
+		r.Get("/", article.HandleArticleList(s.Articles))
+	})
 
 	return r
 }

@@ -1,6 +1,9 @@
 package article
 
 import (
+	"fmt"
+	"github.com/lib/pq"
+	"github.com/pkg/errors"
 	"github.com/serhatmorkoc/go-realworld-example/model"
 	"github.com/serhatmorkoc/go-realworld-example/store/shared/db"
 )
@@ -15,8 +18,54 @@ func NewArticleStore(db *db.DB) model.ArticleStore {
 	}
 }
 
-func (as *articleStore) GetAll(u uint64) ([]*model.Article, error) {
-	panic("implement me")
+func (as *articleStore) GetAll(tag, author, favorited string, limit, offset int) ([]*model.Article, error) {
+
+	query := "SELECT * FROM articles WHERE 1=1 "
+
+	if len(tag) != 0 {
+		query = fmt.Sprintf(query + "AND slug='%s' " , tag)
+	}
+	if len(author) != 0 {
+		query = fmt.Sprintf(query + "AND WHERE author='%s' ", author)
+	}
+
+	query = fmt.Sprintf(query + "LIMIT %d ",limit)
+	query = fmt.Sprintf(query + "OFFSET %d ", offset)
+
+	var articles []*model.Article
+	err := as.db.Read(func(execer db.Execer) error {
+		rows, err := execer.Query(query)
+		if err != nil {
+			return err
+		}
+
+		var article model.Article
+		for rows.Next() {
+			 err = rows.Scan(&article.ArticleId,
+				 &article.UserId,
+				 &article.Slug,
+				 &article.Title,
+				 &article.Description,
+				 &article.Body,
+				 pq.Array(&article.TagList),
+				 &article.Favorited,
+				 &article.FavoritesCount,
+				 &article.CreatedAt,
+				 &article.UpdatedAt)
+			 if err != nil {
+				 return err
+			 }
+			 articles = append(articles,&article)
+		}
+
+		return err
+	})
+
+	if len(articles) == 0 {
+		return nil, errors.New("sql: no rows in result set")
+	}
+	return articles, err
+
 }
 
 func (as *articleStore) GetById(u uint64) (*model.Article, error) {
@@ -25,35 +74,6 @@ func (as *articleStore) GetById(u uint64) (*model.Article, error) {
 
 func (as *articleStore) Create(article *model.Article) (int64, error) {
 	panic("implement me")
-
-	//tx, err := as.db.Begin()
-	//if err != nil {
-	//	return 0, err
-	//}
-	//
-	//article.CreatedAt = time.Now()
-	//article.UpdatedAt = time.Now()
-	//
-	//query := "INSERT INTO articles(slug, title, description,body,tag_list,favorited,favorites_count,created_at,updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)"
-	//result, execErr := tx.Exec(query, article.Slug, article.Title, article.Description, article.Body, pq.Array(article.TagList), article.Favorited, article.FavoritesCount, article.CreatedAt, article.UpdatedAt)
-	//if execErr != nil {
-	//	rollbackErr := tx.Rollback()
-	//	if rollbackErr != nil {
-	//		return 0, rollbackErr
-	//	}
-	//	return 0, execErr
-	//}
-	//
-	//if err := tx.Commit(); err != nil {
-	//	return 0, err
-	//}
-	//
-	//rowsAffected, err := result.RowsAffected()
-	//if err != nil {
-	//	return 0, nil
-	//}
-	//
-	//return rowsAffected, nil
 }
 
 func (as *articleStore) Update(article *model.Article) (int64, error) {

@@ -35,7 +35,7 @@ func Connection(driver, host, database, username, password string, port, maxOpen
 	}
 
 	return &DB{
-		conn: db,
+		Conn: db,
 		lock: new(sync.Mutex),
 	}, nil
 }

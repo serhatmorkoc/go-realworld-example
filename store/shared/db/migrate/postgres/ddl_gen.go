@@ -92,11 +92,8 @@ SELECT name FROM migrations
 `
 
 var createTableUsers = `
-CREATE SEQUENCE IF NOT EXISTS users_seq;
-
-CREATE TABLE IF NOT EXISTS users
-(
-    user_id int DEFAULT NEXTVAL('users_seq') NOT NULL,
+CREATE TABLE IF NOT EXISTS users(
+    user_id SERIAL PRIMARY KEY,
     username VARCHAR NOT NULL,
     email VARCHAR NOT NULL,
     password VARCHAR NOT NULL,
@@ -104,43 +101,34 @@ CREATE TABLE IF NOT EXISTS users
     image VARCHAR,
     created_at Timestamp NOT NULL,
     updated_at Timestamp NOT NULL,
-    CONSTRAINT PK_users PRIMARY KEY
-    (user_id)
+    UNIQUE(username),
+    UNIQUE(email)
 );
 `
 
 var createTableComments = `
-CREATE SEQUENCE IF NOT EXISTS comments_seq;
-
-CREATE TABLE IF NOT EXISTS comments
-(
-    comment_id int DEFAULT NEXTVAL ('comments_seq') NOT NULL,
-    article_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS comments(
+    comment_id SERIAL PRIMARY KEY,
+    article_id INTEGER NOT NULL,
     body TEXT NOT NULL,
     author VARCHAR NOT NULL,
     created_at Timestamp NOT NULL,
-    updated_at Timestamp NOT NULL,
-    CONSTRAINT PK_comments PRIMARY KEY
-    (comment_id)
+    updated_at Timestamp NOT NULL
 );
 `
 
 var createTableArticles = `
-CREATE SEQUENCE IF NOT EXISTS articles_seq;
-
-CREATE TABLE IF NOT EXISTS articles
-(
-    article_id int DEFAULT NEXTVAL ('articles_seq') NOT NULL,
+CREATE TABLE IF NOT EXISTS articles(
+    article_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
     slug VARCHAR NOT NULL,
     title VARCHAR NOT NULL,
     description VARCHAR NOT NULL,
     body TEXT NOT NULL,
     tag_list VARCHAR NOT NULL,
     favorited BOOLEAN NOT NULL,
-    favorites_count int NOT NULL,
+    favorites_count INTEGER NOT NULL,
     created_at Timestamp NOT NULL,
-    updated_at Timestamp NOT NULL,
-    CONSTRAINT PK_articles PRIMARY KEY
-    (article_id)
+    updated_at Timestamp NOT NULL
 );
 `

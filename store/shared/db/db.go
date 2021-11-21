@@ -8,7 +8,7 @@ import (
 )
 
 type DB struct {
-	conn *sql.DB
+	Conn *sql.DB
 	lock *sync.Mutex
 }
 
@@ -26,7 +26,7 @@ func (db *DB) Read(fn func(Execer) error) error {
 	db.lock.Lock()
 	defer db.lock.Unlock()
 
-	err := fn(db.conn)
+	err := fn(db.Conn)
 	return err
 }
 
@@ -34,7 +34,7 @@ func (db *DB) Update(fn func(Execer) error) error {
 	db.lock.Lock()
 	defer db.lock.Unlock()
 
-	tx, err := db.conn.Begin()
+	tx, err := db.Conn.Begin()
 	if err != nil {
 		return err
 	}
@@ -57,5 +57,5 @@ func (db *DB) Update(fn func(Execer) error) error {
 }
 
 func (db *DB) Close() error {
-	return db.conn.Close()
+	return db.Conn.Close()
 }
