@@ -202,16 +202,6 @@
           <line>78</line>
           <option name="timeStamp" value="70" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/store/article/article.go</url>
-          <line>22</line>
-          <option name="timeStamp" value="78" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/handler/api/user/user.go</url>
-          <line>200</line>
-          <option name="timeStamp" value="79" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

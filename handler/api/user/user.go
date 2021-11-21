@@ -15,7 +15,7 @@ import (
 
 func HandleAuthentication(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req LoginUserRequest
+		var req loginUserRequest
 
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -48,7 +48,7 @@ func HandleAuthentication(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var res BaseUserResponse
+		var res baseUserResponse
 		res.User.Email = user.Email
 		res.User.Username = user.UserName
 		res.User.Image = user.Image
@@ -62,7 +62,7 @@ func HandleAuthentication(us model.UserStore) http.HandlerFunc {
 func HandleRegistration(us model.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		var req CreateUserRequest
+		var req createUserRequest
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			render.BadRequest(w, err)
@@ -100,7 +100,7 @@ func HandleRegistration(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var res CreateUserResponse
+		var res createUserResponse
 		res.User.Username = user.UserName
 		res.User.Email = user.Email
 		res.User.Image = user.Image
@@ -139,7 +139,7 @@ func HandleUpdate(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var req UpdateUserRequest
+		var req updateUserRequest
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			render.BadRequest(w, err)
@@ -210,7 +210,7 @@ func HandleProfile(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var profile ProfileResponse
+		var profile profileResponse
 		profile.Profile.Bio = user.Bio
 		profile.Profile.Username = user.UserName
 		profile.Profile.Image = user.Image
@@ -253,7 +253,7 @@ func HandleFollowUser(us model.UserStore) http.HandlerFunc {
 			return
 		}
 
-		var profile ProfileResponse
+		var profile profileResponse
 		profile.Profile.Bio = user.Bio
 		profile.Profile.Username = user.UserName
 		profile.Profile.Image = user.Image
@@ -263,7 +263,7 @@ func HandleFollowUser(us model.UserStore) http.HandlerFunc {
 	}
 }
 
-func (u LoginUserRequest) validateLoginUserRequest() error {
+func (u loginUserRequest) validateLoginUserRequest() error {
 	if len(u.User.Email) == 0 {
 		return errors.New("Email required")
 	}
